@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FilterBarLayout">
+        <attr name="firstFilterText" format="string"/>
+        <attr name="secondFilterText" format="string"/>
+        <attr name="thirdFilterText" format="string"/>
+        <attr name="fourthFilterText" format="string"/>
+        <attr name="fifthFilterText" format="string"/>
+        <attr name="filterTextColor" format="color"/>
+        <attr name="filterTextSize" format="dimension"/>
+        <attr name="filterBarHeight" format="dimension"/>
+        <attr name="filterTextSelectedColor" format="color"/>
+        <attr name="filterCoverColor" format="color"/>
+    </declare-styleable>
+
+</resources>

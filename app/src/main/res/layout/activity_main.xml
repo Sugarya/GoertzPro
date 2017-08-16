@@ -1,21 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sugary.goertzpro.MainActivity"
+    tools:context="com.sugary.goertzpro.scene.filterbar.MainActivity"
+    android:background="@color/bg_white"
     >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.sugary.goertzpro.widget.filterbar.FilterBarLayout
+        android:id="@+id/filter_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:filterBarHeight="45dp"
+        app:filterTextSize="15sp"
+        app:firstFilterText="订单日期"
+        app:secondFilterText="订单类型"
+        app:thirdFilterText="审核类型"
+        >
 
-</android.support.constraint.ConstraintLayout>
+        <!--<com.sugary.goertzpro.scene.filterbar.footer.OrderTypeFilterFooter-->
+            <!--android:id="@+id/footer_order"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="45dp"-->
+            <!--android:background="@color/white"-->
+            <!--/>-->
+
+    </com.sugary.goertzpro.widget.filterbar.FilterBarLayout>
+
+
+
+
+</RelativeLayout>
