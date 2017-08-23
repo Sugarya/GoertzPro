@@ -4,11 +4,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sugary.goertzpro.R;
 import com.sugary.goertzpro.scene.filterbar.event.OrderTypeItemSelectedEvent;
+import com.sugary.goertzpro.scene.filterbar.footer.ServiceOrderDetailFilterFooter;
 import com.sugary.goertzpro.scene.filterbar.model.OrderTypeModel;
 import com.sugary.goertzpro.utils.RxBus;
 import com.sugary.goertzpro.widget.filterbar.FilterBarLayout;
@@ -34,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 //    @BindView(R.id.footer_order)
 //    OrderTypeFilterFooter mOrderTypeFilterFooter;
 
+    @BindView(R.id.footer_service_order_detail)
+    ServiceOrderDetailFilterFooter mOrderDetailFilterFooter;
 
 
     private Unbinder mUnBinder;
@@ -84,6 +90,12 @@ public class MainActivity extends AppCompatActivity {
                 initFilterBarLayout(mOrderTypeModels);
             }
         }, 1200);
+
+//        ServiceOrderDetailFilterFooter filterFooter = new ServiceOrderDetailFilterFooter(this);
+//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1000);
+//        filterFooter.setLayoutParams(layoutParams);
+        mOrderDetailFilterFooter.bindData();
+//        mFilterBar.addFooterView(0, mOrderDetailFilterFooter, FilterBarLayout.FooterMode.MODE_TRANSLATE);
     }
 
     private void initFilterBarLayout(List<OrderTypeModel> orderTypeModelList) {
@@ -97,6 +109,14 @@ public class MainActivity extends AppCompatActivity {
         mFilterFooter.setLayoutParams(layoutParams);
         mFilterFooter.setBackgroundColor(getResources().getColor(R.color.white));
         mFilterBar.addFooterView(1, mFilterFooter, FilterBarLayout.FooterMode.MODE_TRANSLATE);
+
+        mFilterBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: mFilterBar");
+            }
+        });
+//        mFilterBar.setCanceledOnTouchOutside(false);
     }
 
 

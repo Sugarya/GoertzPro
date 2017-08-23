@@ -20,13 +20,13 @@
         app:thirdFilterText="审核类型"
         >
 
-        <!--<com.sugary.goertzpro.scene.filterbar.footer.OrderTypeFilterFooter-->
-            <!--android:id="@+id/footer_order"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="45dp"-->
-            <!--android:background="@color/white"-->
-            <!--/>-->
+        <com.sugary.goertzpro.scene.filterbar.footer.ServiceOrderDetailFilterFooter
+            android:id="@+id/footer_service_order_detail"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="-300dp"
+            android:background="@color/white"
+            />
 
     </com.sugary.goertzpro.widget.filterbar.FilterBarLayout>
 

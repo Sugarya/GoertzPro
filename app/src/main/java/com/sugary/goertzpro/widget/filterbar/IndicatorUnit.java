@@ -40,14 +40,16 @@ public class IndicatorUnit {
      */
     private boolean isExpanded = false;
 
+    private boolean isCanceledOnTouchOutside = false;
+
     private View footerView;
 
-    public IndicatorUnit(String unitTitle, boolean screenDimAvailable) {
+    IndicatorUnit(String unitTitle, boolean screenDimAvailable) {
         this.unitTitle = unitTitle;
         this.screenDimAvailable = screenDimAvailable;
     }
 
-    public IndicatorUnit(String unitTitle, boolean screenDimAvailable, FilterBarLayout.FooterMode footerMode, View indicatorUnit, TextView tvUnit, ImageView imgUnit, boolean isExpanded, View footerView) {
+    public IndicatorUnit(String unitTitle, boolean screenDimAvailable, FilterBarLayout.FooterMode footerMode, View indicatorUnit, TextView tvUnit, ImageView imgUnit, boolean isExpanded, boolean isCanceledOnTouchOutside, View footerView) {
         this.unitTitle = unitTitle;
         this.screenDimAvailable = screenDimAvailable;
         this.footerMode = footerMode;
@@ -55,10 +57,11 @@ public class IndicatorUnit {
         this.tvUnit = tvUnit;
         this.imgUnit = imgUnit;
         this.isExpanded = isExpanded;
+        this.isCanceledOnTouchOutside = isCanceledOnTouchOutside;
         this.footerView = footerView;
     }
 
-    public String getUnitTitle() {
+    String getUnitTitle() {
         return unitTitle;
     }
 
@@ -66,59 +69,67 @@ public class IndicatorUnit {
         this.unitTitle = unitTitle;
     }
 
-    public boolean isScreenDimAvailable() {
+    boolean isScreenDimAvailable() {
         return screenDimAvailable;
     }
 
-    public void setScreenDimAvailable(boolean screenDimAvailable) {
+    void setScreenDimAvailable(boolean screenDimAvailable) {
         this.screenDimAvailable = screenDimAvailable;
     }
 
-    public FilterBarLayout.FooterMode getFooterMode() {
+    FilterBarLayout.FooterMode getFooterMode() {
         return footerMode;
     }
 
-    public void setFooterMode(FilterBarLayout.FooterMode footerMode) {
+    void setFooterMode(FilterBarLayout.FooterMode footerMode) {
         this.footerMode = footerMode;
     }
 
-    public View getIndicatorUnit() {
+     View getIndicatorUnit() {
         return indicatorUnit;
     }
 
-    public void setIndicatorUnit(View indicatorUnit) {
+     void setIndicatorUnit(View indicatorUnit) {
         this.indicatorUnit = indicatorUnit;
     }
 
-    public TextView getTvUnit() {
+     TextView getTvUnit() {
         return tvUnit;
     }
 
-    public void setTvUnit(TextView tvUnit) {
+     void setTvUnit(TextView tvUnit) {
         this.tvUnit = tvUnit;
     }
 
-    public ImageView getImgUnit() {
+     ImageView getImgUnit() {
         return imgUnit;
     }
 
-    public void setImgUnit(ImageView imgUnit) {
+     void setImgUnit(ImageView imgUnit) {
         this.imgUnit = imgUnit;
     }
 
-    public boolean isExpanded() {
+     boolean isExpanded() {
         return isExpanded;
     }
 
-    public void setExpanded(boolean expanded) {
+     void setExpanded(boolean expanded) {
         isExpanded = expanded;
     }
 
-    public View getFooterView() {
+     View getFooterView() {
         return footerView;
     }
 
-    public void setFooterView(View footerView) {
+     void setFooterView(View footerView) {
         this.footerView = footerView;
+    }
+
+     boolean isCanceledOnTouchOutside() {
+        return isCanceledOnTouchOutside;
+    }
+
+     void setCanceledOnTouchOutside(boolean canceledOnTouchOutside) {
+        isCanceledOnTouchOutside = canceledOnTouchOutside;
     }
 }

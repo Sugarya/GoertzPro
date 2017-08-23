@@ -14,11 +14,11 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.sugary.goertzpro.R;
 
 import java.util.LinkedList;
@@ -29,7 +29,7 @@ import static com.sugary.goertzpro.widget.filterbar.FilterBarLayout.FooterMode.M
 
 /**
  * Created by Ethan on 2017/8/9.
- * 筛选条，支持代码和布局混合控制，支持五层筛选条件（可轻松拓展筛选数量），支持两种展开方式，支持高度wrap_content配置
+ * 筛选条，支持代码和布局混合控制，支持五层筛选条件（可轻松拓展筛选数量），支持两种张开方式，支持高度wrap_content配置
  * 父容器必须是FrameLayout及其子控件
  * todo 1.网络请求时，过度动画，放在FooterView上实现
  */
@@ -64,11 +64,6 @@ public class FilterBarLayout extends RelativeLayout {
     private List<IndicatorUnit> mIndicatorUnitList = new LinkedList<>();
 
     /**
-     * 子控件集合
-     */
-    private List<View> mChildViewList;
-
-    /**
      * 筛选条点击监听
      */
     private OnFilterIndicatorClickListener mOnFilterIndicatorClickListener;
@@ -97,7 +92,6 @@ public class FilterBarLayout extends RelativeLayout {
      * 当前选中的
      */
     private int mSelectedIndex = -1;
-
 
 
     public FilterBarLayout(Context context) {
@@ -185,10 +179,48 @@ public class FilterBarLayout extends RelativeLayout {
         }
     }
 
+    private void backWhenTouchOutside() {
+        if (mSelectedIndex >= 0 && mSelectedIndex < mIndicatorUnitList.size()) {
+            IndicatorUnit indicatorUnit = mIndicatorUnitList.get(mSelectedIndex);
+            if (indicatorUnit != null) {
+                if (indicatorUnit.isCanceledOnTouchOutside()) {
+                    back();
+                }
+            }
+        }
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         addChildView();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int size = MeasureSpec.getSize(heightMeasureSpec);
+        int needHeightSpec = MeasureSpec.makeMeasureSpec(size, MeasureSpec.EXACTLY);
+        setMeasuredDimension(widthMeasureSpec, needHeightSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        fixUpHeight();
+    }
+
+    /**
+     * 固定FilterBarLayout高度是wrap_content
+     */
+    private void fixUpHeight() {
+        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+        if (layoutParams == null) {
+            return;
+        }
+        if (!(layoutParams instanceof RelativeLayout.LayoutParams) && !(layoutParams instanceof FrameLayout.LayoutParams)) {
+            throw new RuntimeException("FilterBarLayout needs a RelativeLayout or FrameLayout as parent layout");
+        }
     }
 
     /**
@@ -198,33 +230,35 @@ public class FilterBarLayout extends RelativeLayout {
         int childCount = getChildCount();
         int subChildCount = mContainIndicatorAndFooterLayout.getChildCount();
         if (childCount > 1 && subChildCount == 1) {
-            mChildViewList = new LinkedList<>();
+            List<View> childViewList = new LinkedList<>();
             for (int i = 1; i < childCount; i++) {
-                mChildViewList.add(getChildAt(i));
+                childViewList.add(getChildAt(i));
             }
 
-            int size = mChildViewList.size();
+            int size = childViewList.size();
             for (int j = 0; j < size; j++) {
-                View childView = mChildViewList.get(j);
+                View childView = childViewList.get(j);
                 removeView(childView);
                 addFooterViewOnFinishInflate(j, childView, MODE_EXPAND);
             }
+            childViewList.clear();
         }
     }
 
     /**
      * 当控件注入到xml文件时，设置把子控件当作下拉视图
+     *
      * @param index
      * @param footerView
      * @param footerMode
      */
-    private void addFooterViewOnFinishInflate(int index, View footerView, FooterMode footerMode){
+    private void addFooterViewOnFinishInflate(int index, View footerView, FooterMode footerMode) {
         if (footerView == null) {
             return;
         }
 
         int size = mIndicatorUnitList.size();
-        if(index >= size){
+        if (index >= size) {
             Log.d(TAG, "The index value should be less than the count of indicator unit");
             return;
         }
@@ -294,7 +328,7 @@ public class FilterBarLayout extends RelativeLayout {
         imgIconLayoutParams.gravity = Gravity.CENTER_VERTICAL;
         imgIconLayoutParams.leftMargin = dip2px(5);
         imgIcon.setLayoutParams(imgIconLayoutParams);
-        imgIcon.setImageResource(R.drawable.icon_triangle_down_black);
+        imgIcon.setImageResource(R.drawable.optionfilter_triangle_down_black);
         indicatorUnit.setImgUnit(imgIcon);
 
         indicatorUnitLayout.addView(titleView);
@@ -347,7 +381,14 @@ public class FilterBarLayout extends RelativeLayout {
         }
 
         indicatorUnit.getTvUnit().setTextColor(mFilterTitleSelectedColor);
-        indicatorUnit.getImgUnit().setImageResource(R.drawable.icon_triangle_up_blue);
+        indicatorUnit.getImgUnit().setImageResource(R.drawable.optionfilter_triangle_up_blue);
+
+        setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backWhenTouchOutside();
+            }
+        });
     }
 
     private void reactFilterIndicatorUIWhenClose(IndicatorUnit indicatorUnit) {
@@ -356,7 +397,9 @@ public class FilterBarLayout extends RelativeLayout {
         }
 
         indicatorUnit.getTvUnit().setTextColor(mFilterTitleColor);
-        indicatorUnit.getImgUnit().setImageResource(R.drawable.icon_triangle_down_black);
+        indicatorUnit.getImgUnit().setImageResource(R.drawable.optionfilter_triangle_down_black);
+
+        setClickable(false);
     }
 
     /**
@@ -382,8 +425,14 @@ public class FilterBarLayout extends RelativeLayout {
         }
 
         ValueAnimator valueAnimator;
+
         if (indicatorUnit.getFooterMode() == MODE_EXPAND) {
-            int height = (int) expandFooter.getTag();
+            int height;
+            if (expandFooter.getTag() instanceof Integer) {
+                height = (int) expandFooter.getTag();
+            } else {
+                height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            }
             valueAnimator = ValueAnimator.ofInt(ORIGIN_HEIGHT, height);
         } else {
             int height = expandFooter.getHeight();
@@ -427,11 +476,13 @@ public class FilterBarLayout extends RelativeLayout {
         }
 
         ValueAnimator valueAnimator;
+
         if (indicatorUnit.getFooterMode() == MODE_EXPAND) {
-            int height = (int) expandFooter.getTag();
-            if (height == ViewGroup.LayoutParams.MATCH_PARENT
-                    || height == ViewGroup.LayoutParams.WRAP_CONTENT) {
-                // TODO: 2017/8/15
+            int height;
+            if (expandFooter.getTag() instanceof Integer) {
+                height = (int) expandFooter.getTag();
+            } else {
+                height = ViewGroup.LayoutParams.WRAP_CONTENT;
             }
             valueAnimator = ValueAnimator.ofInt(height, ORIGIN_HEIGHT);
         } else {
@@ -643,7 +694,7 @@ public class FilterBarLayout extends RelativeLayout {
         checkAndRemoveDuplicateFooterView(footerView);
 
         int size = mIndicatorUnitList.size();
-        if(index >= size){
+        if (index >= size) {
             Log.d(TAG, "The index value should be less than the count of indicator unit");
             return;
         }
@@ -676,25 +727,34 @@ public class FilterBarLayout extends RelativeLayout {
 
         footerView.setLayoutParams(lp);
 
-        boolean hasAddition = false;
-        if(mChildViewList != null && mChildViewList.contains(footerView)){
-            hasAddition = true;
-        }
-        if(!hasAddition) {
+        boolean hasAddition = isFooterViewAddition(footerView);
+        if (!hasAddition) {
             mContainIndicatorAndFooterLayout.addView(footerView);
         }
     }
 
+    private boolean isFooterViewAddition(View footerView) {
+        int childCount = mContainIndicatorAndFooterLayout.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View childAt = mContainIndicatorAndFooterLayout.getChildAt(i);
+            if (childAt == footerView) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * 检查该下拉视图是否在控件填充布局的时候添加过
+     *
      * @param footerView
      * @return
      */
     private void checkAndRemoveDuplicateFooterView(View footerView) {
         int size = mIndicatorUnitList.size();
-        for(int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             IndicatorUnit unit = mIndicatorUnitList.get(i);
-            if(footerView == unit.getFooterView()){
+            if (footerView == unit.getFooterView()) {
                 unit.setFooterView(null);
                 unit.setFooterMode(MODE_EXPAND);
                 break;
@@ -716,9 +776,9 @@ public class FilterBarLayout extends RelativeLayout {
         indicatorUnit.setScreenDimAvailable(isAvailable);
     }
 
-    public void back(){
-        if(isShowing() && mSelectedIndex >= 0){
-            back(mSelectedIndex,null);
+    public void back() {
+        if (isShowing() && mSelectedIndex >= 0) {
+            back(mSelectedIndex, null);
         }
     }
 
@@ -755,6 +815,20 @@ public class FilterBarLayout extends RelativeLayout {
 
     public boolean isShowing() {
         return isShowing;
+    }
+
+
+    public void setCanceledOnTouchOutside(boolean enable) {
+        for (IndicatorUnit unit : mIndicatorUnitList) {
+            unit.setCanceledOnTouchOutside(enable);
+        }
+    }
+
+    public void setCanceledOnTouchOutside(int index, boolean enable) {
+        if (index >= 0 && index < mIndicatorUnitList.size()) {
+            IndicatorUnit indicatorUnit = mIndicatorUnitList.get(index);
+            indicatorUnit.setCanceledOnTouchOutside(enable);
+        }
     }
 
 }

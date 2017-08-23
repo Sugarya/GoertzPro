@@ -12,9 +12,10 @@
         android:theme="@style/AppTheme"
         >
         <activity android:name=".scene.filterbar.MainActivity">
-
         </activity>
         <activity android:name=".scene.camera.CameraActivity">
+        </activity>
+        <activity android:name=".scene.switcher.SwitcherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
