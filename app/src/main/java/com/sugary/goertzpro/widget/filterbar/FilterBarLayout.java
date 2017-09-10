@@ -4,6 +4,8 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -28,7 +30,7 @@ import static com.sugary.goertzpro.widget.filterbar.FilterBarLayout.FooterMode.M
 
 
 /**
- * Created by Ethan on 2017/8/9.
+ * Created by Ethan on 2017/8/9. modified by 09/06
  * 筛选条，支持代码和布局混合控制，支持五层筛选条件（可轻松拓展筛选数量），支持两种张开方式，支持高度wrap_content配置
  * 父容器必须是FrameLayout及其子控件
  * todo 1.网络请求时，过度动画，放在FooterView上实现
@@ -59,6 +61,8 @@ public class FilterBarLayout extends RelativeLayout {
     private String mThirdFilterTitle;
     private String mFourthFilterTitle;
     private String mFifthFilterTitle;
+    private Drawable mIndicatorDrawable;
+    private Drawable mIndicatorSelectedDrawable;
 
 
     private List<IndicatorUnit> mIndicatorUnitList = new LinkedList<>();
@@ -124,6 +128,9 @@ public class FilterBarLayout extends RelativeLayout {
         mFilterTitleColor = typedArray.getColor(R.styleable.FilterBarLayout_filterTextColor, DEFAULT_FILTER_TITLE_COLOR);
         mFilterTitleSelectedColor = typedArray.getColor(R.styleable.FilterBarLayout_filterTextSelectedColor, DEFAULT_FILTER_TITLE_SELECTED_COLOR);
         mFilterCoverColor = typedArray.getColor(R.styleable.FilterBarLayout_filterCoverColor, DEFAULT_FILTER_COVER_COLOR);
+
+        mIndicatorDrawable = typedArray.getDrawable(R.styleable.FilterBarLayout_indicatorDrawable);
+        mIndicatorSelectedDrawable = typedArray.getDrawable(R.styleable.FilterBarLayout_indicatorSelectedDrawable);
 
         typedArray.recycle();
 
@@ -218,7 +225,7 @@ public class FilterBarLayout extends RelativeLayout {
         if (layoutParams == null) {
             return;
         }
-        if (!(layoutParams instanceof RelativeLayout.LayoutParams) && !(layoutParams instanceof FrameLayout.LayoutParams)) {
+        if (!(layoutParams instanceof LayoutParams) && !(layoutParams instanceof FrameLayout.LayoutParams)) {
             throw new RuntimeException("FilterBarLayout needs a RelativeLayout or FrameLayout as parent layout");
         }
     }
@@ -328,7 +335,7 @@ public class FilterBarLayout extends RelativeLayout {
         imgIconLayoutParams.gravity = Gravity.CENTER_VERTICAL;
         imgIconLayoutParams.leftMargin = dip2px(5);
         imgIcon.setLayoutParams(imgIconLayoutParams);
-        imgIcon.setImageResource(R.drawable.optionfilter_triangle_down_black);
+        imgIcon.setImageDrawable(mIndicatorDrawable);
         indicatorUnit.setImgUnit(imgIcon);
 
         indicatorUnitLayout.addView(titleView);
@@ -381,7 +388,7 @@ public class FilterBarLayout extends RelativeLayout {
         }
 
         indicatorUnit.getTvUnit().setTextColor(mFilterTitleSelectedColor);
-        indicatorUnit.getImgUnit().setImageResource(R.drawable.optionfilter_triangle_up_blue);
+        indicatorUnit.getImgUnit().setImageDrawable(mIndicatorSelectedDrawable);
 
         setOnClickListener(new OnClickListener() {
             @Override
@@ -397,7 +404,7 @@ public class FilterBarLayout extends RelativeLayout {
         }
 
         indicatorUnit.getTvUnit().setTextColor(mFilterTitleColor);
-        indicatorUnit.getImgUnit().setImageResource(R.drawable.optionfilter_triangle_down_black);
+        indicatorUnit.getImgUnit().setImageDrawable(mIndicatorDrawable);
 
         setClickable(false);
     }
@@ -831,4 +838,19 @@ public class FilterBarLayout extends RelativeLayout {
         }
     }
 
+    public void setIndicatorResource(@DrawableRes int resId){
+        mIndicatorDrawable = getResources().getDrawable(resId);
+    }
+
+    public void setIndicatorSelectedResource(@DrawableRes int resId){
+        mIndicatorSelectedDrawable = getResources().getDrawable(resId);
+    }
+
+    public void setIndicatorDrawable(Drawable indicatorDrawable) {
+        mIndicatorDrawable = indicatorDrawable;
+    }
+
+    public void setIndicatorSelectedDrawable(Drawable indicatorSelectedDrawable) {
+        mIndicatorSelectedDrawable = indicatorSelectedDrawable;
+    }
 }

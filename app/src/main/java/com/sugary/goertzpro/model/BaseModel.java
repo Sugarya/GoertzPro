@@ -1,4 +1,4 @@
-package com.sugary.goertzpro.base;
+package com.sugary.goertzpro.model;
 
 import java.io.Serializable;
 

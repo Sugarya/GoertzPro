@@ -1,19 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.sugary.goertzpro.scene.switcher.SwitcherActivity"
     >
 
 
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+    <TextView
+        android:id="@+id/tv_notice"
+        android:layout_width="match_parent"
+        android:layout_height="33dp"
+        android:layout_marginTop="-33dp"
+        android:paddingLeft="16dp"
+        android:background="@color/bg_yellow"
+        android:gravity="center_vertical"
+        android:textColor="@color/font_gray"
+        android:textSize="13sp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="非厂商直送订单或未开通全厂商模式不支持厂商收货"
         />
 
-</LinearLayout>
+    <Switch
+        android:id="@+id/switch_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="85dp"
+        android:textOn="有"
+        />
+
+    <TextView
+        android:id="@+id/tv_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="~点击~"
+        android:layout_marginTop="120dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_content_scale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:textSize="26sp"
+        android:text="我是测试内容"
+        />
+
+</RelativeLayout>

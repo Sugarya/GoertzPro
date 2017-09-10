@@ -1,7 +1,7 @@
 package com.sugary.goertzpro.scene.filterbar.model;
 
 
-import com.sugary.goertzpro.base.BaseModel;
+import com.sugary.goertzpro.model.BaseModel;
 
 /**
  * Created by Ethan on 2017/8/14.

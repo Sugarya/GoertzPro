@@ -11,6 +11,8 @@
         <attr name="filterBarHeight" format="dimension"/>
         <attr name="filterTextSelectedColor" format="color"/>
         <attr name="filterCoverColor" format="color"/>
+        <attr name="indicatorDrawable" format="reference"/>
+        <attr name="indicatorSelectedDrawable" format="reference"/>
     </declare-styleable>
 
 </resources>
