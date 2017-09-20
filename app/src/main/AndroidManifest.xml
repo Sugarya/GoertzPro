@@ -4,6 +4,7 @@
     >
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -16,16 +17,15 @@
         <activity android:name=".scene.filterbar.MainActivity">
         </activity>
         <activity android:name=".scene.camera.MainActivity">
-
         </activity>
-        <activity android:name=".scene.switcher.SwitcherActivity">
+        <activity android:name=".scene.camera.GalleryActivity">
+        </activity>
+        <activity android:name=".scene.banner.BannerTestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".scene.camera.GalleryActivity">
         </activity>
     </application>
 

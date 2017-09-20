@@ -5,17 +5,13 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.sugary.goertzpro.R;
 import com.sugary.goertzpro.scene.filterbar.event.OrderTypeItemSelectedEvent;
 import com.sugary.goertzpro.scene.filterbar.footer.ServiceOrderDetailFilterFooter;
 import com.sugary.goertzpro.scene.filterbar.model.OrderTypeModel;
 import com.sugary.goertzpro.utils.RxBus;
-import com.sugary.goertzpro.widget.filterbar.FilterBarLayout;
+import com.sugary.goertzpro.widget.custom.filterbar.FilterBarLayout;
 import com.sugary.goertzpro.scene.filterbar.footer.OrderTypeFilterFooter;
 
 import java.util.ArrayList;
@@ -23,7 +19,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 import rx.Subscription;
 import rx.functions.Action1;

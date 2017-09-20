@@ -1,4 +1,4 @@
-package com.sugary.goertzpro.widget.filterbar;
+package com.sugary.goertzpro.widget.custom.filterbar;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -26,7 +26,7 @@ import com.sugary.goertzpro.R;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.sugary.goertzpro.widget.filterbar.FilterBarLayout.FooterMode.MODE_EXPAND;
+import static com.sugary.goertzpro.widget.custom.filterbar.FilterBarLayout.FooterMode.MODE_EXPAND;
 
 
 /**

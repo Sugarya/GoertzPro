@@ -1,9 +1,8 @@
-package com.sugary.goertzpro.widget.filterbar;
+package com.sugary.goertzpro.widget.custom.filterbar;
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.sugary.goertzpro.widget.filterbar.FilterBarLayout;
 
 /**
  * Created by Ethan on 2017/8/15.
