@@ -18,8 +18,6 @@
         </activity>
         <activity android:name=".scene.camera.MainActivity">
         </activity>
-        <activity android:name=".scene.camera.GalleryActivity">
-        </activity>
         <activity android:name=".scene.banner.BannerTestActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

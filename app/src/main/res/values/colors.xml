@@ -26,6 +26,7 @@
     <color name="font_gray_gray">#cccccc</color>
     <color name="font_red">#ff0000</color>
     <color name="font_blue">#00A7F8</color>
+    <color name="shadow_red">#44ff0000</color>
 
     <color name="bg_white">#F8F7F7</color>
     <color name="bg_yellow">#FFFCE0</color>

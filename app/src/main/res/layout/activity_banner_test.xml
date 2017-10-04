@@ -42,18 +42,36 @@
             >
 
             <LinearLayout
+                android:id="@+id/container_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 >
 
-                <com.sugary.goertzpro.widget.banner.LoopViewPager
-                    android:id="@+id/pager_looper"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    />
+                    android:layout_height="wrap_content"
+                    >
+
+                    <com.sugary.goertzpro.widget.banner.ShadowImageView
+                        android:id="@+id/shadow_img_view"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:layout_height="160dp"
+                        app:shadowRound="5dp"
+                        app:shadowColor="@color/shadow_red"
+                        />
+
+                    <com.sugary.goertzpro.widget.banner.LoopViewPager
+                        android:id="@+id/pager_looper"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        />
+
+                </FrameLayout>
+
 
                 <com.sugary.goertzpro.widget.banner.PagerIndicator
                     android:id="@+id/indicator_pager"
@@ -62,6 +80,15 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="16dp"
                     />
+
+                <!--<com.dingmouren.paletteimageview.PaletteImageView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="130dp"-->
+                <!--app:palettePadding="10dp"-->
+                <!--app:paletteRadius="5dp"-->
+                <!--app:paletteShadowRadius="10dp"-->
+                <!--app:paletteSrc="@mipmap/ic_launcher"-->
+                <!--/>-->
 
                 <TextView
                     android:layout_width="match_parent"

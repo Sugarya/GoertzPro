@@ -12,14 +12,15 @@ import java.util.List;
 
 /**
  * Created by Ethan on 2017/9/20.
+ * Banner适配器
  */
 
-public class MyPagerAdapter extends PagerAdapter {
+public class BannerPagerAdapter extends PagerAdapter {
 
     private List<String> mDataList;
 
 
-    public MyPagerAdapter(List<String> dataList) {
+    public BannerPagerAdapter(List<String> dataList) {
         mDataList = dataList;
     }
 
@@ -34,18 +35,18 @@ public class MyPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        RoundedImageView imgView = new RoundedImageView(container.getContext());
-        imgView.setCornerRadius(8);
-        imgView.setScaleType(ImageView.ScaleType.FIT_XY);
-        ImageLoader.display(container.getContext(), mDataList.get(position), imgView);
-        container.addView(imgView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        return imgView;
+    public Object instantiateItem(final ViewGroup container, int position) {
+        RoundedImageView imageView = new RoundedImageView(container.getContext());
+        imageView.setCornerRadius(8);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        ImageLoader.display(container.getContext(), mDataList.get(position), imageView);
+        container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        return imageView;
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-//        super.destroyItem(container,position,object);
         container.removeView((View) object);
     }
 }

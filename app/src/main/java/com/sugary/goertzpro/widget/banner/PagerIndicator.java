@@ -2,6 +2,8 @@ package com.sugary.goertzpro.widget.banner;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,29 +16,37 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationSet;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+
 import com.sugary.goertzpro.R;
+
 import static android.support.v4.view.ViewPager.OnPageChangeListener;
 
 
 /**
  * Modify by Ethan 2017/09/20
+ * 实现矩形指示器 原型指示器动画
  * created by ongakuer(https://github.com/ongakuer/CircleIndicator)
  */
 public class PagerIndicator extends LinearLayout {
 
-    private final static int DEFAULT_INDICATOR_WIDTH = 8;
-    private final static int DEFAULT_INDICATOR_HEIGHT = 8;
+    private static final int TYPE_SELECTED_INDICATOR = 1;
+    private static final int TYPE_NOT_SELECTED_INDICATOR = 0;
+
+    private static final int UNIT_DISTANCE = 8;
+    private static final float DEFAULT_INDICATOR_WIDTH = 2.4f * UNIT_DISTANCE;
+    private static final float DEFAULT_INDICATOR_HEIGHT = UNIT_DISTANCE;
     private ViewPager mViewpager;
-    private int mIndicatorMargin = -1;
     private int mIndicatorWidth = -1;
     private int mIndicatorHeight = -1;
-    private int mAnimatorResId = R.animator.scale_with_alpha;
-    private int mAnimatorReverseResId = R.animator.scale_with_alpha_reverse;
+    private int mIndicatorMargin = -1;
+    private int mAnimatorResId = -1;
+    private int mAnimatorReverseResId = -1;
     private int mIndicatorBackgroundResId = R.drawable.rectangle_red;
     private int mIndicatorUnselectedBackgroundResId = R.drawable.white_radius;
-    private Animator mAnimatorOut;
+    private ValueAnimator mAnimatorOut;
     private Animator mAnimatorIn;
     private Animator mImmediateAnimatorOut;
     private Animator mImmediateAnimatorIn;
@@ -75,23 +85,15 @@ public class PagerIndicator extends LinearLayout {
         }
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.PagerIndicator);
-        mIndicatorWidth =
-                typedArray.getDimensionPixelSize(R.styleable.PagerIndicator_ci_width, -1);
-        mIndicatorHeight =
-                typedArray.getDimensionPixelSize(R.styleable.PagerIndicator_ci_height, -1);
-        mIndicatorMargin =
-                typedArray.getDimensionPixelSize(R.styleable.PagerIndicator_ci_margin, -1);
+        mIndicatorWidth = typedArray.getDimensionPixelSize(R.styleable.PagerIndicator_ci_width, 0);
+        mIndicatorHeight = typedArray.getDimensionPixelSize(R.styleable.PagerIndicator_ci_height, 0);
+        mIndicatorMargin = typedArray.getDimensionPixelSize(R.styleable.PagerIndicator_ci_margin, 0);
 
-        mAnimatorResId = typedArray.getResourceId(R.styleable.PagerIndicator_ci_animator,
-                R.animator.scale_with_alpha);
-        mAnimatorReverseResId =
-                typedArray.getResourceId(R.styleable.PagerIndicator_ci_animator_reverse, R.animator.scale_with_alpha_reverse);
-        mIndicatorBackgroundResId =
-                typedArray.getResourceId(R.styleable.PagerIndicator_ci_drawable,
-                        R.drawable.rectangle_red);
-        mIndicatorUnselectedBackgroundResId =
-                typedArray.getResourceId(R.styleable.PagerIndicator_ci_drawable_unselected,
-                        R.drawable.white_radius);
+        mIndicatorBackgroundResId = typedArray.getResourceId(R.styleable.PagerIndicator_ci_drawable, 0);
+        mIndicatorUnselectedBackgroundResId = typedArray.getResourceId(R.styleable.PagerIndicator_ci_drawable_unselected, 0);
+
+        mAnimatorResId = typedArray.getResourceId(R.styleable.PagerIndicator_ci_animator, 0);
+        mAnimatorReverseResId = typedArray.getResourceId(R.styleable.PagerIndicator_ci_animator_reverse, 0);
 
         int orientation = typedArray.getInt(R.styleable.PagerIndicator_ci_orientation, -1);
         setOrientation(orientation == VERTICAL ? VERTICAL : HORIZONTAL);
@@ -107,11 +109,12 @@ public class PagerIndicator extends LinearLayout {
      */
     public void configureIndicator(int indicatorWidth, int indicatorHeight, int indicatorMargin) {
         configureIndicator(indicatorWidth, indicatorHeight, indicatorMargin,
-                R.animator.scale_with_alpha, 0, R.drawable.white_radius, R.drawable.white_radius);
+                R.animator.scale_with_alpha, R.animator.scale_with_alpha_reverse, R.drawable.white_radius, R.drawable.rectangle_red);
     }
 
     public void configureIndicator(int indicatorWidth, int indicatorHeight, int indicatorMargin,
-                                   @AnimatorRes int animatorId, @AnimatorRes int animatorReverseId,
+                                   @AnimatorRes int animatorId,
+                                   @AnimatorRes int animatorReverseId,
                                    @DrawableRes int indicatorBackgroundId,
                                    @DrawableRes int indicatorUnselectedBackgroundId) {
 
@@ -128,44 +131,31 @@ public class PagerIndicator extends LinearLayout {
     }
 
     private void checkIndicatorConfig(Context context) {
-        mIndicatorWidth = (mIndicatorWidth < 0) ? dip2px(DEFAULT_INDICATOR_WIDTH) : mIndicatorWidth;
-        mIndicatorHeight =
-                (mIndicatorHeight < 0) ? dip2px(DEFAULT_INDICATOR_HEIGHT) : mIndicatorHeight;
-        mIndicatorMargin =
-                (mIndicatorMargin < 0) ? dip2px(DEFAULT_INDICATOR_HEIGHT * 0.7f) : mIndicatorMargin;
+        mIndicatorWidth = (mIndicatorWidth <= 0) ? dip2px(DEFAULT_INDICATOR_WIDTH) : mIndicatorWidth;
+        mIndicatorHeight = (mIndicatorHeight <= 0) ? dip2px(DEFAULT_INDICATOR_HEIGHT) : mIndicatorHeight;
+        mIndicatorMargin = (mIndicatorMargin <= 0) ? dip2px(DEFAULT_INDICATOR_HEIGHT / 2) : mIndicatorMargin;
 
-        mAnimatorResId = (mAnimatorResId == 0) ? R.animator.scale_with_alpha : mAnimatorResId;
-        mAnimatorReverseResId = (mAnimatorReverseResId == 0)? R.animator.scale_with_alpha_reverse : mAnimatorReverseResId;
+        mIndicatorBackgroundResId = (mIndicatorBackgroundResId <= 0) ? R.drawable.rectangle_red : mIndicatorBackgroundResId;
+        mIndicatorUnselectedBackgroundResId = (mIndicatorUnselectedBackgroundResId <= 0) ? R.drawable.white_radius : mIndicatorUnselectedBackgroundResId;
 
+        mAnimatorResId = (mAnimatorResId <= 0) ? R.animator.scale_with_alpha : mAnimatorResId;
         mAnimatorOut = createAnimatorOut(context);
         mImmediateAnimatorOut = createAnimatorOut(context);
         mImmediateAnimatorOut.setDuration(0);
 
+        mAnimatorReverseResId = (mAnimatorReverseResId <= 0) ? R.animator.scale_with_alpha_reverse : mAnimatorReverseResId;
         mAnimatorIn = createAnimatorIn(context);
         mImmediateAnimatorIn = createAnimatorIn(context);
         mImmediateAnimatorIn.setDuration(0);
-
-        mIndicatorBackgroundResId = (mIndicatorBackgroundResId == 0) ? R.drawable.rectangle_red
-                : mIndicatorBackgroundResId;
-        mIndicatorUnselectedBackgroundResId =
-                (mIndicatorUnselectedBackgroundResId == 0) ? R.drawable.white_radius
-                        : mIndicatorUnselectedBackgroundResId;
     }
 
-    private Animator createAnimatorOut(Context context) {
-        return AnimatorInflater.loadAnimator(context, mAnimatorResId);
+    private ValueAnimator createAnimatorOut(Context context) {
+        return (ObjectAnimator)AnimatorInflater.loadAnimator(context, mAnimatorResId);
     }
+
 
     private Animator createAnimatorIn(Context context) {
-//        Animator animatorIn;
-//        if (mAnimatorReverseResId == 0) {
-//            animatorIn = AnimatorInflater.loadAnimator(context, mAnimatorReverseResId);
-//            animatorIn.setInterpolator(new ReverseInterpolator());
-//        } else {
-//            animatorIn = AnimatorInflater.loadAnimator(context, mAnimatorReverseResId);
-//        }
-        Animator animatorIn = AnimatorInflater.loadAnimator(context, mAnimatorReverseResId);
-        return animatorIn;
+        return AnimatorInflater.loadAnimator(context, mAnimatorReverseResId);
     }
 
     public void setViewPager(ViewPager viewPager) {
@@ -187,7 +177,6 @@ public class PagerIndicator extends LinearLayout {
 
         @Override
         public void onPageSelected(int position) {
-
             if (mViewpager.getAdapter() == null || mViewpager.getAdapter().getCount() <= 0) {
                 return;
             }
@@ -204,26 +193,40 @@ public class PagerIndicator extends LinearLayout {
 
             View currentIndicator;
             if (mLastPosition >= 0 && (currentIndicator = getChildAt(mLastPosition)) != null) {
-                ViewGroup.MarginLayoutParams layoutParams = (MarginLayoutParams)currentIndicator.getLayoutParams();
+                currentIndicator.setBackgroundResource(mIndicatorUnselectedBackgroundResId);
+
+                ViewGroup.MarginLayoutParams layoutParams = (MarginLayoutParams) currentIndicator.getLayoutParams();
                 layoutParams.width = dip2px(DEFAULT_INDICATOR_HEIGHT);
                 layoutParams.height = dip2px(DEFAULT_INDICATOR_HEIGHT);
-                layoutParams.leftMargin = dip2px(DEFAULT_INDICATOR_HEIGHT / 2.5f);
-                layoutParams.rightMargin = dip2px(DEFAULT_INDICATOR_HEIGHT / 2.5f);
+                layoutParams.leftMargin = dip2px(DEFAULT_INDICATOR_HEIGHT / 2);
+                layoutParams.rightMargin = dip2px(DEFAULT_INDICATOR_HEIGHT / 2);
                 currentIndicator.setLayoutParams(layoutParams);
-                currentIndicator.setBackgroundResource(mIndicatorUnselectedBackgroundResId);
+
                 mAnimatorIn.setTarget(currentIndicator);
                 mAnimatorIn.start();
             }
 
-            View selectedIndicator = getChildAt(position);
+            final View selectedIndicator = getChildAt(position);
             if (selectedIndicator != null) {
-                ViewGroup.MarginLayoutParams layoutParams = (MarginLayoutParams)selectedIndicator.getLayoutParams();
-                layoutParams.width = dip2px(DEFAULT_INDICATOR_WIDTH);
-                layoutParams.height = dip2px(DEFAULT_INDICATOR_HEIGHT);
-                layoutParams.leftMargin = dip2px(DEFAULT_INDICATOR_HEIGHT * 1f);
-                layoutParams.rightMargin = dip2px(DEFAULT_INDICATOR_HEIGHT * 1f);
-                selectedIndicator.setLayoutParams(layoutParams);
                 selectedIndicator.setBackgroundResource(mIndicatorBackgroundResId);
+
+                final int start = dip2px(DEFAULT_INDICATOR_HEIGHT);
+                final int end = dip2px(DEFAULT_INDICATOR_WIDTH);
+                mAnimatorOut = ValueAnimator.ofInt(start, end);
+                mAnimatorOut.setDuration(100);
+                mAnimatorOut.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        int animatedValue = (int) animation.getAnimatedValue();
+                        ViewGroup.MarginLayoutParams layoutParams = (MarginLayoutParams) selectedIndicator.getLayoutParams();
+                        layoutParams.width = animatedValue;
+                        layoutParams.height = start;
+                        int delta = (end - animatedValue) / 2;
+                        layoutParams.leftMargin = start / 2 + delta;
+                        layoutParams.rightMargin = start / 2 + delta;
+                        selectedIndicator.setLayoutParams(layoutParams);
+                    }
+                });
                 mAnimatorOut.setTarget(selectedIndicator);
                 mAnimatorOut.start();
             }
@@ -285,38 +288,12 @@ public class PagerIndicator extends LinearLayout {
 
         for (int i = 0; i < count; i++) {
             if (currentItem == i) {
-                addIndicator(orientation, mIndicatorBackgroundResId, mImmediateAnimatorOut, 1);
+                addIndicator(orientation, mIndicatorBackgroundResId, mImmediateAnimatorOut, TYPE_SELECTED_INDICATOR);
             } else {
                 addIndicator(orientation, mIndicatorUnselectedBackgroundResId,
-                        mImmediateAnimatorIn, 0);
+                        mImmediateAnimatorIn, TYPE_NOT_SELECTED_INDICATOR);
             }
         }
-    }
-
-    private void addIndicator(int orientation, @DrawableRes int backgroundDrawableId,
-                              Animator animator) {
-        if (animator.isRunning()) {
-            animator.end();
-            animator.cancel();
-        }
-
-        View Indicator = new View(getContext());
-        Indicator.setBackgroundResource(backgroundDrawableId);
-        addView(Indicator, mIndicatorWidth, mIndicatorHeight);
-        LayoutParams lp = (LayoutParams) Indicator.getLayoutParams();
-
-        if (orientation == HORIZONTAL) {
-            lp.leftMargin = (int) (mIndicatorMargin / 2.5);
-            lp.rightMargin = (int) (mIndicatorMargin / 2.5);
-        } else {
-            lp.topMargin = (int) (mIndicatorMargin / 2.5);
-            lp.bottomMargin = (int) (mIndicatorMargin / 2.5);
-        }
-
-        Indicator.setLayoutParams(lp);
-
-        animator.setTarget(Indicator);
-        animator.start();
     }
 
     private void addIndicator(int orientation, @DrawableRes int backgroundDrawableId,
@@ -328,20 +305,20 @@ public class PagerIndicator extends LinearLayout {
 
         View Indicator = new View(getContext());
         Indicator.setBackgroundResource(backgroundDrawableId);
-        if(indicatorType == 0){
+        if (indicatorType == TYPE_NOT_SELECTED_INDICATOR) {
             addView(Indicator, mIndicatorHeight, mIndicatorHeight);
-        }else{
+        } else {
             addView(Indicator, mIndicatorWidth, mIndicatorHeight);
         }
 
         LayoutParams lp = (LayoutParams) Indicator.getLayoutParams();
 
         if (orientation == HORIZONTAL) {
-            lp.leftMargin = (int) (mIndicatorMargin / 2.5);
-            lp.rightMargin = (int) (mIndicatorMargin / 2.5);
+            lp.leftMargin = dip2px(DEFAULT_INDICATOR_HEIGHT / 2);
+            lp.rightMargin = dip2px(DEFAULT_INDICATOR_HEIGHT / 2);
         } else {
-            lp.topMargin = (int) (mIndicatorMargin / 2.5);
-            lp.bottomMargin = (int) (mIndicatorMargin / 2.5);
+            lp.topMargin = dip2px(DEFAULT_INDICATOR_HEIGHT / 2);
+            lp.bottomMargin = dip2px(DEFAULT_INDICATOR_HEIGHT / 2);
         }
 
         Indicator.setLayoutParams(lp);

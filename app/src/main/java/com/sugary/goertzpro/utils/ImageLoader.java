@@ -1,9 +1,12 @@
 package com.sugary.goertzpro.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.sugary.goertzpro.R;
 
 /**
@@ -28,5 +31,18 @@ public class ImageLoader {
                 .into(imageView);
     }
 
+    public static void display(Context context, String url, Target target){
+        if(context == null){
+            return;
+        }
+        if (TextUtils.isEmpty(url)) {
+            url = "http://";
+        }
+        Picasso.with(context)
+                .load(url)
+                .placeholder(R.drawable.icon_image_holder)
+                .error(R.drawable.icon_image_holder)
+                .into(target);
+    }
 
 }
