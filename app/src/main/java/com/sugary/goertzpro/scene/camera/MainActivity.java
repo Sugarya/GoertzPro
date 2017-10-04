@@ -1,6 +1,8 @@
 package com.sugary.goertzpro.scene.camera;
 
+import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,7 +14,6 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,20 +21,27 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.sugary.goertzpro.R;
+import com.sugary.goertzpro.scene.camera.entity.PhotoEntity;
+import com.sugary.goertzpro.scene.camera.event.AddPhotoClickEvent;
+import com.sugary.goertzpro.utils.RxBus;
+import com.sugary.goertzpro.widget.custom.SelectPhotoRecyclerView;
+import com.tbruyelle.rxpermissions.RxPermissions;
+import com.zhihu.matisse.Matisse;
 
 import java.io.FileDescriptor;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static android.app.Activity.RESULT_OK;
+import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * Created by Ethan 2017/08/16
- * todo 如何实现打开最近的相册   todo 如何实现多选的回调
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
 
@@ -49,14 +57,56 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.img_activity_camera2)
     ImageView mImg2;
 
+    @BindView(R.id.recycler_select_photo)
+    SelectPhotoRecyclerView mRecyclerView;
+
     private ImageView[] imgArray = new ImageView[]{mImg, mImg2};
+    private Subscription mSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         ButterKnife.bind(this);
+        initRxBus();
+    }
 
+    private void initRxBus(){
+        mSubscription = RxBus.getInstance().toSubscription(AddPhotoClickEvent.class, new Action1<AddPhotoClickEvent>() {
+            @Override
+            public void call(AddPhotoClickEvent addPhotoClickEvent) {
+                new RxPermissions(MainActivity.this)
+                        .request(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
+                        .subscribe(new Action1<Boolean>() {
+                            @Override
+                            public void call(Boolean aBoolean) {
+                                if(aBoolean){
+                                    mRecyclerView.openGallery(MainActivity.this);
+                                }else{
+                                    Toast.makeText(MainActivity.this, "同意授权相机和读取存储卡内容才能使用搭配功能", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                throwable.printStackTrace();
+                            }
+                        });
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        });
+    }
+
+
+
+    @Override
+    protected void onDestroy() {
+        mSubscription.unsubscribe();
+        super.onDestroy();
     }
 
     @OnClick(R.id.container_footer_add)
@@ -132,13 +182,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            Uri uri = data.getData();
-            String scheme = uri.getScheme();
-            Log.d(TAG, "onActivityResult: scheme = " + scheme);
             switch (requestCode) {
                 case CODE_GALLERY:
+                    Uri uri = data.getData();
+                    String scheme = uri.getScheme();
+                    Log.d(TAG, "onActivityResult: scheme = " + scheme);
                     String imagePath = getSelectedImagePathAfterKitKat(uri);
                     displayImage(imagePath, mImg);
+                    break;
+                case SelectPhotoRecyclerView.REQUEST_PHOTO_CODE:
+                    List<Uri> uriList = Matisse.obtainResult(data);
+                    List<PhotoEntity> photoEntityList = new ArrayList<>();
+                    for(Uri u : uriList){
+                        PhotoEntity entity = new PhotoEntity(u);
+                        photoEntityList.add(entity);
+                    }
+                    mRecyclerView.addNewPhotoData(photoEntityList);
                     break;
             }
         }

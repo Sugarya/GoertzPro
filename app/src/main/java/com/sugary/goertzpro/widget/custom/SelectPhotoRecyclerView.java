@@ -1,8 +1,11 @@
-package com.sugary.goertzpro.widget;
+package com.sugary.goertzpro.widget.custom;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,10 +16,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.sugary.goertzpro.BuildConfig;
 import com.sugary.goertzpro.R;
 import com.sugary.goertzpro.scene.camera.entity.PhotoEntity;
 import com.sugary.goertzpro.scene.camera.event.AddPhotoClickEvent;
 import com.sugary.goertzpro.utils.RxBus;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.PicassoEngine;
+import com.zhihu.matisse.internal.entity.CaptureStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +35,19 @@ import butterknife.OnClick;
 
 /**
  * Created by Ethan on 2017/10/4.
+ * 照片选择器，使用Matisse知乎照片浏览库，通过RxBus发送事件与Fragment／Activity交互
  */
 
 public class SelectPhotoRecyclerView extends RecyclerView {
 
+    /**
+     * onActivityResult(）回调请求码
+     */
+    public static final int REQUEST_PHOTO_CODE = 2;
+
     private static final int DEFAULT_SPAN_COUNT = 3;
+    private static final int DEFAULT_PHOTO_LIMIT_COUNT = 5;
+
     private SelectPhotoAdapter mSelectPhotoAdapter;
 
     public SelectPhotoRecyclerView(Context context) {
@@ -53,8 +69,6 @@ public class SelectPhotoRecyclerView extends RecyclerView {
     }
 
     class SelectPhotoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-        private static final int LIMIT_COUNT = 5;
 
         private static final int TYPE_FOOTER = 11;
 
@@ -105,14 +119,13 @@ public class SelectPhotoRecyclerView extends RecyclerView {
         }
 
         private int getFooterCount() {
-            if (mDataList.size() >= LIMIT_COUNT) {
+            if (mDataList.size() >= DEFAULT_PHOTO_LIMIT_COUNT) {
                 return 0;
             }
             return 1;
         }
 
-
-        public void notifyAllData(List<PhotoEntity> photoEntityList) {
+        void notifyAllData(List<PhotoEntity> photoEntityList) {
             if (photoEntityList == null || photoEntityList.isEmpty()) {
                 mDataList.clear();
                 notifyDataSetChanged();
@@ -128,12 +141,12 @@ public class SelectPhotoRecyclerView extends RecyclerView {
             notifyItemRangeChanged(0, itemCount);
         }
 
-        public void addNotifyData(List<PhotoEntity> photoEntityList) {
+        void addNotifyData(List<PhotoEntity> photoEntityList) {
             mDataList.addAll(photoEntityList);
             notifyDataSetChanged();
         }
 
-        public List<PhotoEntity> getDataList() {
+        List<PhotoEntity> getDataList() {
             return mDataList;
         }
 
@@ -187,9 +200,64 @@ public class SelectPhotoRecyclerView extends RecyclerView {
 
     }
 
+    private int dip2px(float dipValue) {
+        float scale = getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5f);
+    }
+
+    //**********************************************对外提供的方法
 
     public SelectPhotoAdapter getSelectPhotoAdapter() {
         return mSelectPhotoAdapter;
     }
+
+    public void addNewPhotoData(List<PhotoEntity> photoEntityList){
+        if(mSelectPhotoAdapter != null) {
+            mSelectPhotoAdapter.addNotifyData(photoEntityList);
+        }
+    }
+
+    /**
+     * 打开相册
+     * @param fragment
+     */
+    public void openGallery(Fragment fragment) {
+        String authority = BuildConfig.APPLICATION_ID + ".extend.group";
+        Matisse.from(fragment)
+                .choose(MimeType.allOf())
+                .theme(R.style.Matisse_Zhihu)
+                .capture(true)
+                .captureStrategy(new CaptureStrategy(true, authority))
+                .countable(true)
+                .maxSelectable(1)
+                .gridExpectedSize(dip2px(120))
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                .thumbnailScale(0.85f)
+                .imageEngine(new PicassoEngine())
+                .forResult(REQUEST_PHOTO_CODE);
+    }
+
+    /**
+     * 打开相册
+     * @param activity
+     */
+    public void openGallery(Activity activity) {
+        String authority = BuildConfig.APPLICATION_ID + ".extend.group";
+        Matisse.from(activity)
+                .choose(MimeType.allOf())
+                .theme(R.style.Matisse_Zhihu)
+                .capture(true)
+                .captureStrategy(new CaptureStrategy(true, authority))
+                .countable(true)
+                .maxSelectable(1)
+                .gridExpectedSize(dip2px(120))
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                .thumbnailScale(0.85f)
+                .imageEngine(new PicassoEngine())
+                .forResult(REQUEST_PHOTO_CODE);
+    }
+
+
+
 
 }
