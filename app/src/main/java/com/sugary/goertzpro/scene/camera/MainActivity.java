@@ -16,6 +16,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -59,6 +60,9 @@ public class MainActivity extends Activity {
 
     @BindView(R.id.recycler_select_photo)
     SelectPhotoRecyclerView mRecyclerView;
+
+    @BindView(R.id.check_tv_view)
+    CheckedTextView mCheckedTextView;
 
     private ImageView[] imgArray = new ImageView[]{mImg, mImg2};
     private Subscription mSubscription;
@@ -111,7 +115,8 @@ public class MainActivity extends Activity {
 
     @OnClick(R.id.container_footer_add)
     public void onFooterAddClick() {
-        openGallery3();
+//        openGallery3();
+        mCheckedTextView.setChecked(true);
     }
 
     private void openGallery0() {
