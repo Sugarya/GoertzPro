@@ -11,7 +11,7 @@ import com.sugary.goertzpro.scene.filterbar.event.OrderTypeItemSelectedEvent;
 import com.sugary.goertzpro.scene.filterbar.footer.ServiceOrderDetailFilterFooter;
 import com.sugary.goertzpro.scene.filterbar.model.OrderTypeModel;
 import com.sugary.goertzpro.utils.RxBus;
-import com.sugary.goertzpro.widget.custom.filterbar.FilterBarLayout;
+import com.sugary.goertzpro.widget.filterbar.FilterBarLayout;
 import com.sugary.goertzpro.scene.filterbar.footer.OrderTypeFilterFooter;
 
 import java.util.ArrayList;

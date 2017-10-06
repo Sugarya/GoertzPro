@@ -22,30 +22,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     private List<String> mDataList;
 
-    public RecyclerAdapter() {
-        mDataList = new ArrayList<>();
-        mDataList.add("test1");
-        mDataList.add("test2");
-        mDataList.add("test3");
-        mDataList.add("test4");
-        mDataList.add("test5");
-        mDataList.add("test6");
-        mDataList.add("test7");
-        mDataList.add("test8");
-        mDataList.add("test9");
-        mDataList.add("test10");
-        mDataList.add("test11");
-        mDataList.add("test12");
-        mDataList.add("test13");
-        mDataList.add("test14");
-        mDataList.add("test15");
-        mDataList.add("test16");
-        mDataList.add("test17");
-        mDataList.add("test18");
-        mDataList.add("test19");
-        mDataList.add("test20");
-        mDataList.add("test21");
-        mDataList.add("test22");
+    public RecyclerAdapter(List<String> dataList) {
+        mDataList = dataList;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.sugary.goertzpro.widget.custom.filterbar;
+package com.sugary.goertzpro.widget.filterbar;
 
 /**
  * Created by Ethan on 2017/8/15.

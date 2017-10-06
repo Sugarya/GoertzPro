@@ -86,7 +86,7 @@
 
     </LinearLayout>
 
-    <com.sugary.goertzpro.widget.BottomNavigator
+    <com.sugary.goertzpro.widget.custom.BottomNavigator
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_alignParentBottom="true"

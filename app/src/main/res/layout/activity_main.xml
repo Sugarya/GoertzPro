@@ -9,7 +9,7 @@
     android:background="@color/bg_white"
     >
 
-    <com.sugary.goertzpro.widget.custom.filterbar.FilterBarLayout
+    <com.sugary.goertzpro.widget.filterbar.FilterBarLayout
         android:id="@+id/filter_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
             android:background="@color/white"
             />
 
-    </com.sugary.goertzpro.widget.custom.filterbar.FilterBarLayout>
+    </com.sugary.goertzpro.widget.filterbar.FilterBarLayout>
 
 
 

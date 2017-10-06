@@ -1,4 +1,4 @@
-package com.sugary.goertzpro.widget;
+package com.sugary.goertzpro.widget.custom;
 
 import android.content.Context;
 import android.content.res.TypedArray;

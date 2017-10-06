@@ -1,4 +1,4 @@
-package com.sugary.goertzpro.widget.custom.filterbar;
+package com.sugary.goertzpro.widget.filterbar;
 
 import android.view.View;
 import android.widget.ImageView;
