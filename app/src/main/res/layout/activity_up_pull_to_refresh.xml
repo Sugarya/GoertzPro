@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.sugary.goertzpro.scene.uprefresh.PullRefreshActivity"
+    >
+
+    <com.sugary.goertzpro.widget.pullrefresh.UpPullRefreshLayout
+        android:id="@+id/container_body"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:frameWidth="70dp"
+        app:frameHeight="70dp"
+        app:refreshBoundary="70dp"
+        app:frameSpeed="20"
+        >
+
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/recycler_refresh"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:scrollbars="none"-->
+            <!--android:background="@color/bg_white"-->
+            <!--/>-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/img_refresh"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:src="@drawable/ic_santa_claus1"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_refresh"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:textSize="12sp"-->
+            <!--android:textColor="@color/font_gray"-->
+            <!--android:text="上拉刷新"-->
+            <!--/>-->
+        <ScrollView
+            android:id="@+id/scroll_body"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_white"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="40sp"
+                    android:text="我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="40sp"
+                    android:text="我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="40sp"
+                    android:text="我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容"
+                    />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </com.sugary.goertzpro.widget.pullrefresh.UpPullRefreshLayout>
+
+</LinearLayout>

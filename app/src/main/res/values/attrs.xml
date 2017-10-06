@@ -89,4 +89,11 @@
         <attr name="fifthIcon" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="UpPullRefreshLayout">
+        <attr name="frameWidth" format="dimension"/>
+        <attr name="frameHeight" format="dimension"/>
+        <attr name="frameSpeed" format="integer"/>
+        <attr name="refreshBoundary" format="dimension"/>
+    </declare-styleable>
+
 </resources>
