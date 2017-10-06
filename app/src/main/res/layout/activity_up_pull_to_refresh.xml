@@ -19,13 +19,13 @@
         app:frameSpeed="20"
         >
 
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/recycler_refresh"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:scrollbars="none"-->
-            <!--android:background="@color/bg_white"-->
-            <!--/>-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:background="@color/bg_white"
+            />
 
         <!--<ImageView-->
             <!--android:id="@+id/img_refresh"-->
@@ -49,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bg_white"
+            android:visibility="gone"
             >
 
             <LinearLayout

@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.support.annotation.IdRes;
@@ -12,26 +13,27 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.sugary.goertzpro.R;
 import com.sugary.goertzpro.utils.RxBus;
 
 /**
  * Created by Ethan on 2017/10/6.
+ *
  * 下拉刷新分成两个状态：原始态，数据刷新态，结束态
  * 状态变化有如下情况：1.原始态- 结束态  2.原始态- 数据刷新态 - 结束态
  * 状态与状态之间通过动画链接；下拉操作改变原始态；到数据刷新态，或者回到原始态
  */
-
 public class UpPullRefreshLayout extends RelativeLayout {
 
     private static final String TAG = "UpPullRefreshLayout";
@@ -52,6 +54,7 @@ public class UpPullRefreshLayout extends RelativeLayout {
             R.drawable.ic_santa_claus11,
             R.drawable.ic_santa_claus12};
 
+    private static final int CHILD_VIEW_COUNT = 3;
     private static final int DEFAULT_REFRESH_FRAME_WIDTH_DP = 70;
     private static final int DEFAULT_REFRESH_FRAME_HEIGHT_DP = 70;
     private static final int DEFAULT_REFRESH_BOUNDARY = 80;
@@ -79,6 +82,7 @@ public class UpPullRefreshLayout extends RelativeLayout {
      */
     private boolean mEnableRefresh = false;
     private boolean mIsFirstRun = true;
+    private TextView mTvRefreshTitle;
 
     public UpPullRefreshLayout(Context context) {
         super(context);
@@ -97,22 +101,31 @@ public class UpPullRefreshLayout extends RelativeLayout {
     }
 
     private void init() {
-        mImgRefresh = new ImageView(getContext());
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(mFrameWidth, mFrameHeight);
-        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        mImgRefresh.setLayoutParams(layoutParams);
-        mImgRefresh.setBackgroundResource(R.drawable.ic_santa_claus1);
+        mTvRefreshTitle = new TextView(getContext());
+        RelativeLayout.LayoutParams operationLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        operationLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        operationLayoutParams.topMargin = - mBoundary / 2;
+        mTvRefreshTitle.setLayoutParams(operationLayoutParams);
+        mTvRefreshTitle.setTextColor(Color.parseColor("#666666"));
+        mTvRefreshTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+        mTvRefreshTitle.setText("下拉刷新");
+        addView(mTvRefreshTitle, 0);
 
+        mImgRefresh = new ImageView(getContext());
+        RelativeLayout.LayoutParams imgLayoutParams = new RelativeLayout.LayoutParams(mFrameWidth, mFrameHeight);
+        imgLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        mImgRefresh.setLayoutParams(imgLayoutParams);
+        mImgRefresh.setBackgroundResource(R.drawable.ic_santa_claus1);
         addView(mImgRefresh, 0);
     }
 
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (getChildCount() < 2) {
+        if (getChildCount() < CHILD_VIEW_COUNT) {
             return super.dispatchTouchEvent(ev);
         }
-
+        final View childView = getChildAt(CHILD_VIEW_COUNT - 1);
         int action = ev.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -121,11 +134,9 @@ public class UpPullRefreshLayout extends RelativeLayout {
                 mLastY = ev.getRawY();
                 break;
             case MotionEvent.ACTION_MOVE:
-//                Log.d(TAG, "ACTION_MOVE mLastY = " + mLastY);
-                View childView = getChildAt(1);
                 if(mIsFirstRun) {
                     if (childView instanceof RecyclerView) {
-                        RecyclerView.LayoutManager layoutManager = ((RecyclerView) getChildAt(1)).getLayoutManager();
+                        RecyclerView.LayoutManager layoutManager = ((RecyclerView) childView).getLayoutManager();
                         if (layoutManager instanceof LinearLayoutManager) {
                             LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
                             mEnableRefresh = linearLayoutManager.findFirstVisibleItemPosition() == 0;
@@ -134,7 +145,7 @@ public class UpPullRefreshLayout extends RelativeLayout {
                             mEnableRefresh = gridLayoutManager.findFirstVisibleItemPosition() == 0;
                         }
                     } else if (childView instanceof ScrollView) {
-                        ScrollView scrollView = (ScrollView) getChildAt(1);
+                        ScrollView scrollView = (ScrollView) childView;
                         mEnableRefresh = scrollView.getScrollY() == 0;
                     } else if (childView instanceof NestedScrollView) {
                         NestedScrollView nestedScrollView = (NestedScrollView) childView;
@@ -149,9 +160,18 @@ public class UpPullRefreshLayout extends RelativeLayout {
                 int deltaY = (int) (ev.getRawY() - mLastY) / 3;
                 Log.d(TAG, "ACTION_MOVE: deltaY = " + deltaY);
                 if (deltaY > 0 && mEnableRefresh) {
-                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) childView.getLayoutParams();
-                    layoutParams.topMargin = deltaY;
-                    childView.setLayoutParams(layoutParams);
+                    RelativeLayout.LayoutParams childLayoutParams = (RelativeLayout.LayoutParams) childView.getLayoutParams();
+                    childLayoutParams.topMargin = deltaY;
+                    childView.setLayoutParams(childLayoutParams);
+
+                    if (deltaY < mBoundary) {
+                        mTvRefreshTitle.setText("下拉刷新");
+                    } else {
+                        mTvRefreshTitle.setText("松开刷新");
+                    }
+                    RelativeLayout.LayoutParams titleLayoutParams = (RelativeLayout.LayoutParams)mTvRefreshTitle.getLayoutParams();
+                    titleLayoutParams.topMargin = - mBoundary / 2 + deltaY;
+                    mTvRefreshTitle.setLayoutParams(titleLayoutParams);
 
                     mImgRefresh.setBackgroundResource(REFRESH_FRAME_ARRAYS[deltaY / mFrameSpeed % REFRESH_FRAME_ARRAYS.length]);
                 }
@@ -172,23 +192,27 @@ public class UpPullRefreshLayout extends RelativeLayout {
 
                     ValueAnimator animator = ValueAnimator.ofInt(startValue, endValue);
                     animator.setDuration(160);
-                    animator.setTarget(getChildAt(1));
+                    animator.setTarget(childView);
                     animator.setInterpolator(new DecelerateInterpolator());
                     animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                         @Override
                         public void onAnimationUpdate(ValueAnimator animation) {
                             int animatedValue = (int) animation.getAnimatedValue();
-                            View childView = getChildAt(1);
                             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) childView.getLayoutParams();
                             layoutParams.topMargin = animatedValue;
                             childView.setLayoutParams(layoutParams);
+
+                            RelativeLayout.LayoutParams titleLayoutParams = (RelativeLayout.LayoutParams)mTvRefreshTitle.getLayoutParams();
+                            titleLayoutParams.topMargin = - mBoundary / 2 + animatedValue;
+                            mTvRefreshTitle.setLayoutParams(titleLayoutParams);
                         }
                     });
                     animator.addListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
-                            //超过刷新栏阀值时
+                            //超过刷新栏界限时
                             if (upDeltaY >= mBoundary) {
+                                mTvRefreshTitle.setText("正在刷新");
                                 mAnimationDrawable = new AnimationDrawable();
                                 int length = REFRESH_FRAME_ARRAYS.length;
                                 int index = upDeltaY / mFrameSpeed % length;
@@ -204,7 +228,7 @@ public class UpPullRefreshLayout extends RelativeLayout {
                                     mImgRefresh.setBackgroundDrawable(mAnimationDrawable);
                                 }
                                 mAnimationDrawable.start();
-                                RxBus.getInstance().send(new PullRefreshFetchDataEvent(mBoundary, getChildAt(1)));
+                                RxBus.getInstance().send(new PullDownRefreshDataEvent(mBoundary, childView));
                             }
                         }
                     });
@@ -229,7 +253,7 @@ public class UpPullRefreshLayout extends RelativeLayout {
      * 改变刷新状态，从数据刷新态到结束态
      * @param event
      */
-    public void notifyRefreshStatusOnSuccess(PullRefreshFetchDataEvent event) {
+    public void notifyRefreshStatusOnSuccess(PullDownRefreshDataEvent event) {
         final int startValue = event.getRefreshBarHeight();
         final View bodyView = event.getBodyView();
 
@@ -257,6 +281,7 @@ public class UpPullRefreshLayout extends RelativeLayout {
             }
         });
 
+        mTvRefreshTitle.setText("下拉刷新");
         animator.start();
     }
 
