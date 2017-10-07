@@ -1,10 +1,18 @@
 package com.sugary.goertzpro.scene.uprefresh;
 
 import android.os.Bundle;
+import android.support.v4.view.NestedScrollingChildHelper;
+import android.support.v4.view.NestedScrollingParentHelper;
+import android.support.v4.view.ViewParentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.sugary.goertzpro.R;
 import com.sugary.goertzpro.scene.uprefresh.adapter.RecyclerAdapter;
@@ -32,6 +40,7 @@ public class PullRefreshActivity extends AppCompatActivity {
 
     @BindView(R.id.scroll_body)
     ScrollView mScrollView;
+
 
     private List<String> mTitleList;
 
@@ -104,6 +113,10 @@ public class PullRefreshActivity extends AppCompatActivity {
                 }, 1200);
             }
         });
+    }
+
+    private void testMethod(){
+
     }
 
 

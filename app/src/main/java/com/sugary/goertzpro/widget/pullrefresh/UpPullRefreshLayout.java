@@ -116,6 +116,7 @@ public class UpPullRefreshLayout extends RelativeLayout {
         imgLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         mImgRefresh.setLayoutParams(imgLayoutParams);
         mImgRefresh.setBackgroundResource(R.drawable.ic_santa_claus1);
+        mImgRefresh.setVisibility(INVISIBLE);
         addView(mImgRefresh, 0);
     }
 
@@ -155,9 +156,11 @@ public class UpPullRefreshLayout extends RelativeLayout {
                             NestedScrollView nestedScrollView = (NestedScrollView) childView;
                             mEnableRefresh = nestedScrollView.getScrollY() == 0;
                         }
+
                         if (mEnableRefresh && mIsFirstRun) {
                             mIsFirstRun = false;
                             mLastY = ev.getRawY();
+                            mImgRefresh.setVisibility(VISIBLE);
                         }
                     }
                 }
@@ -165,9 +168,11 @@ public class UpPullRefreshLayout extends RelativeLayout {
                 return mEnableRefresh;
             case MotionEvent.ACTION_UP:
                 mEnableRefresh = false;
+                mImgRefresh.setVisibility(INVISIBLE);
                 break;
             case MotionEvent.ACTION_CANCEL:
                 mEnableRefresh = false;
+                mImgRefresh.setVisibility(INVISIBLE);
                 break;
         }
 
