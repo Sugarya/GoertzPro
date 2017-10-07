@@ -29,7 +29,7 @@ import com.sugary.goertzpro.utils.RxBus;
 
 /**
  * Created by Ethan on 2017/10/6.
- *
+ * <p>
  * 下拉刷新分成两个状态：原始态，数据刷新态，结束态
  * 状态变化有如下情况：1.原始态- 结束态  2.原始态- 数据刷新态 - 结束态
  * 状态与状态之间通过动画链接；下拉操作改变原始态；到数据刷新态，或者回到原始态
@@ -92,9 +92,9 @@ public class UpPullRefreshLayout extends RelativeLayout {
     public UpPullRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.UpPullRefreshLayout);
-        mFrameWidth = (int)typedArray.getDimension(R.styleable.UpPullRefreshLayout_frameWidth, mFrameWidth);
-        mFrameHeight = (int)typedArray.getDimension(R.styleable.UpPullRefreshLayout_frameHeight, mFrameHeight);
-        mBoundary = (int)typedArray.getDimension(R.styleable.UpPullRefreshLayout_refreshBoundary, mBoundary);
+        mFrameWidth = (int) typedArray.getDimension(R.styleable.UpPullRefreshLayout_frameWidth, mFrameWidth);
+        mFrameHeight = (int) typedArray.getDimension(R.styleable.UpPullRefreshLayout_frameHeight, mFrameHeight);
+        mBoundary = (int) typedArray.getDimension(R.styleable.UpPullRefreshLayout_refreshBoundary, mBoundary);
         mFrameSpeed = typedArray.getInt(R.styleable.UpPullRefreshLayout_frameSpeed, mFrameSpeed);
         typedArray.recycle();
         init();
@@ -104,7 +104,7 @@ public class UpPullRefreshLayout extends RelativeLayout {
         mTvRefreshTitle = new TextView(getContext());
         RelativeLayout.LayoutParams operationLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         operationLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        operationLayoutParams.topMargin = - mBoundary / 2;
+        operationLayoutParams.topMargin = -mBoundary / 2;
         mTvRefreshTitle.setLayoutParams(operationLayoutParams);
         mTvRefreshTitle.setTextColor(Color.parseColor("#666666"));
         mTvRefreshTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
@@ -122,9 +122,11 @@ public class UpPullRefreshLayout extends RelativeLayout {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (getChildCount() < CHILD_VIEW_COUNT) {
-            return super.dispatchTouchEvent(ev);
-        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
         final View childView = getChildAt(CHILD_VIEW_COUNT - 1);
         int action = ev.getAction();
         switch (action) {
@@ -134,32 +136,56 @@ public class UpPullRefreshLayout extends RelativeLayout {
                 mLastY = ev.getRawY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if(mIsFirstRun) {
-                    if (childView instanceof RecyclerView) {
-                        RecyclerView.LayoutManager layoutManager = ((RecyclerView) childView).getLayoutManager();
-                        if (layoutManager instanceof LinearLayoutManager) {
-                            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
-                            mEnableRefresh = linearLayoutManager.findFirstVisibleItemPosition() == 0;
-                        }else if(layoutManager instanceof GridLayoutManager){
-                            GridLayoutManager gridLayoutManager = (GridLayoutManager)layoutManager;
-                            mEnableRefresh = gridLayoutManager.findFirstVisibleItemPosition() == 0;
+                float deltaY = ev.getRawY() - mLastY;
+                if(deltaY > 0){
+                    if (mIsFirstRun ) {
+                        if (childView instanceof RecyclerView) {
+                            RecyclerView.LayoutManager layoutManager = ((RecyclerView) childView).getLayoutManager();
+                            if (layoutManager instanceof LinearLayoutManager) {
+                                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+                                mEnableRefresh = linearLayoutManager.findFirstVisibleItemPosition() == 0;
+                            } else if (layoutManager instanceof GridLayoutManager) {
+                                GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+                                mEnableRefresh = gridLayoutManager.findFirstVisibleItemPosition() == 0;
+                            }
+                        } else if (childView instanceof ScrollView) {
+                            ScrollView scrollView = (ScrollView) childView;
+                            mEnableRefresh = scrollView.getScrollY() == 0;
+                        } else if (childView instanceof NestedScrollView) {
+                            NestedScrollView nestedScrollView = (NestedScrollView) childView;
+                            mEnableRefresh = nestedScrollView.getScrollY() == 0;
                         }
-                    } else if (childView instanceof ScrollView) {
-                        ScrollView scrollView = (ScrollView) childView;
-                        mEnableRefresh = scrollView.getScrollY() == 0;
-                    } else if (childView instanceof NestedScrollView) {
-                        NestedScrollView nestedScrollView = (NestedScrollView) childView;
-                        mEnableRefresh = nestedScrollView.getScrollY() == 0;
-                    }
-                    if (mEnableRefresh && mIsFirstRun) {
-                        mIsFirstRun = false;
-                        mLastY = ev.getRawY();
+                        if (mEnableRefresh && mIsFirstRun) {
+                            mIsFirstRun = false;
+                            mLastY = ev.getRawY();
+                        }
                     }
                 }
+                Log.d(TAG, "onInterceptTouchEvent: mEnableRefresh = " + mEnableRefresh);
+                return mEnableRefresh;
+            case MotionEvent.ACTION_UP:
+                mEnableRefresh = false;
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                mEnableRefresh = false;
+                break;
+        }
 
-                int deltaY = (int) (ev.getRawY() - mLastY) / 3;
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        final View childView = getChildAt(CHILD_VIEW_COUNT - 1);
+        int action = event.getAction();
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                mLastY = event.getRawY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int deltaY = (int) (event.getRawY() - mLastY) / 3;
                 Log.d(TAG, "ACTION_MOVE: deltaY = " + deltaY);
-                if (deltaY > 0 && mEnableRefresh) {
+                if(deltaY >= 0) {
                     RelativeLayout.LayoutParams childLayoutParams = (RelativeLayout.LayoutParams) childView.getLayoutParams();
                     childLayoutParams.topMargin = deltaY;
                     childView.setLayoutParams(childLayoutParams);
@@ -169,15 +195,15 @@ public class UpPullRefreshLayout extends RelativeLayout {
                     } else {
                         mTvRefreshTitle.setText("松开刷新");
                     }
-                    RelativeLayout.LayoutParams titleLayoutParams = (RelativeLayout.LayoutParams)mTvRefreshTitle.getLayoutParams();
-                    titleLayoutParams.topMargin = - mBoundary / 2 + deltaY;
+                    RelativeLayout.LayoutParams titleLayoutParams = (RelativeLayout.LayoutParams) mTvRefreshTitle.getLayoutParams();
+                    titleLayoutParams.topMargin = -mBoundary / 2 + deltaY;
                     mTvRefreshTitle.setLayoutParams(titleLayoutParams);
 
                     mImgRefresh.setBackgroundResource(REFRESH_FRAME_ARRAYS[deltaY / mFrameSpeed % REFRESH_FRAME_ARRAYS.length]);
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                final int upDeltaY = (int) (ev.getRawY() - mLastY) / 3;
+                final int upDeltaY = (int) (event.getRawY() - mLastY) / 3;
                 Log.d(TAG, "ACTION_UP upDeltaY = " + upDeltaY);
                 if (upDeltaY > 0 && mEnableRefresh) {
                     int startValue;
@@ -202,8 +228,8 @@ public class UpPullRefreshLayout extends RelativeLayout {
                             layoutParams.topMargin = animatedValue;
                             childView.setLayoutParams(layoutParams);
 
-                            RelativeLayout.LayoutParams titleLayoutParams = (RelativeLayout.LayoutParams)mTvRefreshTitle.getLayoutParams();
-                            titleLayoutParams.topMargin = - mBoundary / 2 + animatedValue;
+                            RelativeLayout.LayoutParams titleLayoutParams = (RelativeLayout.LayoutParams) mTvRefreshTitle.getLayoutParams();
+                            titleLayoutParams.topMargin = -mBoundary / 2 + animatedValue;
                             mTvRefreshTitle.setLayoutParams(titleLayoutParams);
                         }
                     });
@@ -239,10 +265,8 @@ public class UpPullRefreshLayout extends RelativeLayout {
                 Log.d(TAG, "ACTION_CANCEL");
                 break;
         }
-
-        return super.dispatchTouchEvent(ev);
+        return super.onTouchEvent(event);
     }
-
 
     private int dip2px(float dipValue) {
         float scale = getResources().getDisplayMetrics().density;
@@ -251,6 +275,7 @@ public class UpPullRefreshLayout extends RelativeLayout {
 
     /**
      * 改变刷新状态，从数据刷新态到结束态
+     *
      * @param event
      */
     public void notifyRefreshStatusOnSuccess(PullDownRefreshDataEvent event) {
