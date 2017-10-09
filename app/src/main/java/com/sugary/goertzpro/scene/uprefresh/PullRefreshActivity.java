@@ -1,15 +1,12 @@
 package com.sugary.goertzpro.scene.uprefresh;
 
 import android.os.Bundle;
-import android.support.v4.view.NestedScrollingChildHelper;
-import android.support.v4.view.NestedScrollingParentHelper;
-import android.support.v4.view.ViewParentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +38,9 @@ public class PullRefreshActivity extends AppCompatActivity {
     @BindView(R.id.scroll_body)
     ScrollView mScrollView;
 
+    @BindView(R.id.tv_scroll_content)
+    TextView mTvScrollContent;
+
 
     private List<String> mTitleList;
 
@@ -52,6 +52,7 @@ public class PullRefreshActivity extends AppCompatActivity {
 
         initRxBus();
         initRecyclerView();
+        testMethod();
     }
 
     private void initRxBus() {
@@ -115,8 +116,23 @@ public class PullRefreshActivity extends AppCompatActivity {
         });
     }
 
-    private void testMethod(){
+    private void testMethod() {
+        mTvScrollContent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+//                Toast.makeText(PullRefreshActivity.this, "mTvScrollContent onTouch", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "mTvScrollContent onTouch");
+                return true;
+            }
+        });
 
+        mTvScrollContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "mTvScrollContent onClick");
+//                Toast.makeText(PullRefreshActivity.this, "mTvScrollContent onClick", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

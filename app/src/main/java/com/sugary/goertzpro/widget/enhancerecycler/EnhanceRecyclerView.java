@@ -260,6 +260,14 @@ public class EnhanceRecyclerView extends RecyclerView {
         mInternalAdapter.notifyItemInserted(position);
     }
 
+    public final void notifyItemInserted(int position, boolean immediately) {
+        if(immediately && getItemAnimator() != null){
+            getItemAnimator().setAddDuration(0);
+        }
+        position = position + mInternalAdapter.getHeaderViewCount();
+        mInternalAdapter.notifyItemInserted(position);
+    }
+
     public final void notifyItemMoved(int fromPosition, int toPosition) {
         fromPosition = fromPosition + mInternalAdapter.getHeaderViewCount();
         toPosition = toPosition + mInternalAdapter.getHeaderViewCount();
@@ -267,6 +275,13 @@ public class EnhanceRecyclerView extends RecyclerView {
     }
 
     public final void notifyItemRangeInserted(int positionStart, int itemCount) {
+        notifyItemRangeInserted(positionStart, itemCount, true);
+    }
+
+    public final void notifyItemRangeInserted(int positionStart, int itemCount, boolean immediately) {
+        if(immediately && getItemAnimator() != null){
+            getItemAnimator().setAddDuration(0);
+        }
         positionStart = positionStart + mInternalAdapter.getHeaderViewCount();
         mInternalAdapter.notifyItemRangeInserted(positionStart, itemCount);
     }
