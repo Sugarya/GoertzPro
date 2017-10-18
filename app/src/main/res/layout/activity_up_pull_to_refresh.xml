@@ -13,20 +13,12 @@
         android:id="@+id/container_body"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:frameWidth="70dp"
         app:frameHeight="70dp"
-        app:refreshBoundary="70dp"
+        app:refreshBoundary="75dp"
         app:frameSpeed="20"
         >
 
-        <com.sugary.goertzpro.widget.enhancerecycler.EnhanceRecyclerView
-            android:id="@+id/recycler_refresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:background="@color/bg_white"
-            android:visibility="visible"
-            />
+
 
         <!--<ImageView-->
             <!--android:id="@+id/img_refresh"-->
@@ -50,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bg_white"
-            android:visibility="gone"
+            android:visibility="visible"
             >
 
             <LinearLayout
@@ -65,6 +57,15 @@
                     android:layout_height="wrap_content"
                     android:textSize="40sp"
                     android:text="我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_pull_refresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="36sp"
+                    android:text="我是可点的文字"
+                    android:onClick="onTxtClick"
                     />
 
                 <!--<TextView-->
@@ -84,6 +85,15 @@
             </LinearLayout>
 
         </ScrollView>
+
+        <com.sugary.goertzpro.widget.enhancerecycler.EnhanceRecyclerView
+            android:id="@+id/recycler_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:background="@color/bg_white"
+            android:visibility="gone"
+            />
 
 
     </com.sugary.goertzpro.widget.pullrefresh.UpPullRefreshLayout>

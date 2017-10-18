@@ -31,6 +31,7 @@
         <activity android:name=".scene.filterbar.MainActivity">
         </activity>
         <activity android:name=".scene.camera.MainActivity">
+
         </activity>
         <activity android:name=".scene.banner.BannerTestActivity">
         </activity>
@@ -40,6 +41,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".scene.filterbar.TabBarActivity">
+        </activity>
+        <activity android:name=".scene.scrollconflicts.ScrollConflictsActivity">
+
         </activity>
     </application>
 

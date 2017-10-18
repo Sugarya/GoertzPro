@@ -3,6 +3,7 @@ package com.sugary.goertzpro.widget.custom;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,12 +35,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.sugary.goertzpro.widget.custom.SelectPhotoRecyclerView.ShowTypeEnum.ONLY_DISPLAY;
+import static com.sugary.goertzpro.widget.custom.SelectPhotoRecyclerView.ShowTypeEnum.UP_LOADING;
+
 /**
  * Created by Ethan on 2017/10/4.
  * 照片选择器，使用Matisse知乎照片浏览库，通过RxBus发送事件与Fragment／Activity交互
  */
 
 public class SelectPhotoRecyclerView extends RecyclerView {
+
+    private static final String TAG = "SelectPhotoRecyclerView";
 
     /**
      * onActivityResult(）回调请求码
@@ -47,8 +54,17 @@ public class SelectPhotoRecyclerView extends RecyclerView {
 
     private static final int DEFAULT_SPAN_COUNT = 3;
     private static final int DEFAULT_PHOTO_LIMIT_COUNT = 5;
+    private static final SparseArray<ShowTypeEnum> SHOW_TYPE_SPARSE = new SparseArray<>();
+    static {
+        SHOW_TYPE_SPARSE.put(0, ONLY_DISPLAY);
+        SHOW_TYPE_SPARSE.put(1, UP_LOADING);
+    }
+
 
     private SelectPhotoAdapter mSelectPhotoAdapter;
+    private ShowTypeEnum mShowTypeEnum = UP_LOADING;
+
+
 
     public SelectPhotoRecyclerView(Context context) {
         super(context);
@@ -57,6 +73,9 @@ public class SelectPhotoRecyclerView extends RecyclerView {
 
     public SelectPhotoRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SelectPhotoRecyclerView);
+        mShowTypeEnum = SHOW_TYPE_SPARSE.get(typedArray.getInt(R.styleable.SelectPhotoRecyclerView_showType, 1));
+        typedArray.recycle();
         init();
     }
 
@@ -80,10 +99,16 @@ public class SelectPhotoRecyclerView extends RecyclerView {
 
         @Override
         public int getItemViewType(int position) {
-            if (getFooterCount() > 0 && position > getBodyCount() - 1) {
-                return TYPE_FOOTER;
+            switch (mShowTypeEnum){
+                case UP_LOADING:
+                    if (getFooterCount() > 0 && position > getBodyCount() - 1) {
+                        return TYPE_FOOTER;
+                    }else {
+                        return super.getItemViewType(position);
+                    }
+                default:
+                    return super.getItemViewType(position);
             }
-            return super.getItemViewType(position);
         }
 
         @Override
@@ -94,7 +119,9 @@ public class SelectPhotoRecyclerView extends RecyclerView {
                 return new FooterViewHolder(footerView);
             } else {
                 View bodyView = LayoutInflater.from(context).inflate(R.layout.item_submit_photo, parent, false);
-                return new PhotoViewHolder(bodyView);
+                PhotoViewHolder photoViewHolder = new PhotoViewHolder(bodyView);
+                photoViewHolder.setupShowState(mShowTypeEnum);
+                return photoViewHolder;
             }
         }
 
@@ -180,6 +207,16 @@ public class SelectPhotoRecyclerView extends RecyclerView {
                     notifyItemRemoved(position);
                 }
             }
+
+            void setupShowState(ShowTypeEnum typeEnum){
+                switch (typeEnum){
+                    case ONLY_DISPLAY:
+                        mImgCancel.setVisibility(INVISIBLE);
+                        break;
+                    default:
+                        mImgCancel.setVisibility(VISIBLE);
+                }
+            }
         }
 
         class FooterViewHolder extends RecyclerView.ViewHolder {
@@ -258,6 +295,28 @@ public class SelectPhotoRecyclerView extends RecyclerView {
     }
 
 
+    public ShowTypeEnum getShowTypeEnum() {
+        return mShowTypeEnum;
+    }
 
+    /**
+     * 设置展示类型
+     * @param showTypeEnum
+     */
+    public void setShowTypeEnum(ShowTypeEnum showTypeEnum) {
+        mShowTypeEnum = showTypeEnum;
+    }
+
+    public enum ShowTypeEnum{
+        /**
+         * 可进行上传图片操作
+         */
+        UP_LOADING,
+
+        /**
+         * 只展示图片
+         */
+        ONLY_DISPLAY
+    }
 
 }

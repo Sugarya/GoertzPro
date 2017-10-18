@@ -6,10 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sugary.goertzpro.R;
 import com.sugary.goertzpro.scene.uprefresh.adapter.RecyclerAdapter;
@@ -30,7 +28,7 @@ public class PullRefreshActivity extends AppCompatActivity {
     private static final String TAG = "PullRefreshActivity";
 
     @BindView(R.id.container_body)
-    UpPullRefreshLayout mContainerBody;
+    UpPullRefreshLayout mUpPullRefreshLayout;
 
     @BindView(R.id.recycler_refresh)
     EnhanceRecyclerView mRecyclerRefresh;
@@ -41,7 +39,7 @@ public class PullRefreshActivity extends AppCompatActivity {
     @BindView(R.id.tv_scroll_content)
     TextView mTvScrollContent;
 
-
+    //arguments
     private List<String> mTitleList;
 
     @Override
@@ -52,7 +50,6 @@ public class PullRefreshActivity extends AppCompatActivity {
 
         initRxBus();
         initRecyclerView();
-        testMethod();
     }
 
     private void initRxBus() {
@@ -60,10 +57,11 @@ public class PullRefreshActivity extends AppCompatActivity {
             @Override
             public void call(final PullDownRefreshDataEvent pullDownRefreshDataEvent) {
                 Log.d(TAG, "call: PullDownRefreshDataEvent");
-                mContainerBody.postDelayed(new Runnable() {
+                mUpPullRefreshLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mContainerBody.notifyRefreshStatusOnSuccess(pullDownRefreshDataEvent);
+                        mUpPullRefreshLayout.notifyRefreshStatusOnSuccess(pullDownRefreshDataEvent);
+                        mUpPullRefreshLayout.completeRefresh();
                     }
                 }, 1500);
             }
@@ -116,23 +114,9 @@ public class PullRefreshActivity extends AppCompatActivity {
         });
     }
 
-    private void testMethod() {
-        mTvScrollContent.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-//                Toast.makeText(PullRefreshActivity.this, "mTvScrollContent onTouch", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "mTvScrollContent onTouch");
-                return true;
-            }
-        });
 
-        mTvScrollContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "mTvScrollContent onClick");
-//                Toast.makeText(PullRefreshActivity.this, "mTvScrollContent onClick", Toast.LENGTH_SHORT).show();
-            }
-        });
+    public void onTxtClick(View view){
+        mUpPullRefreshLayout.startRefreshing();
     }
 
 
