@@ -485,7 +485,7 @@ public class UpPullRefreshLayout extends RelativeLayout {
 
         final int endValue = mBoundary + 60;
         ValueAnimator refreshAnimator = ValueAnimator.ofInt(0, endValue);
-        refreshAnimator.setDuration(600);
+        refreshAnimator.setDuration(400);
         refreshAnimator.setInterpolator(new DecelerateInterpolator());
         refreshAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override

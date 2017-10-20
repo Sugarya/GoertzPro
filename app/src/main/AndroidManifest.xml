@@ -31,16 +31,16 @@
         <activity android:name=".scene.filterbar.MainActivity">
         </activity>
         <activity android:name=".scene.camera.MainActivity">
-
-        </activity>
-        <activity android:name=".scene.banner.BannerTestActivity">
-        </activity>
-        <activity android:name=".scene.uprefresh.PullRefreshActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".scene.banner.BannerTestActivity">
+        </activity>
+        <activity android:name=".scene.uprefresh.PullRefreshActivity">
+
         </activity>
         <activity android:name=".scene.filterbar.TabBarActivity">
         </activity>

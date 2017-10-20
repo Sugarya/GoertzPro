@@ -22,10 +22,11 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.sugary.goertzpro.R;
-import com.sugary.goertzpro.scene.camera.entity.PhotoEntity;
-import com.sugary.goertzpro.scene.camera.event.AddPhotoClickEvent;
 import com.sugary.goertzpro.utils.RxBus;
 import com.sugary.goertzpro.widget.custom.SelectPhotoRecyclerView;
+import com.sugary.goertzpro.widget.photorecycle.PhotoEntity;
+import com.sugary.goertzpro.widget.photorecycle.event.AddPhotoClickEvent;
+import com.sugary.goertzpro.widget.photorecycle.event.RemovePhotoClickEvent;
 import com.tbruyelle.rxpermissions.RxPermissions;
 import com.zhihu.matisse.Matisse;
 
@@ -64,7 +65,6 @@ public class MainActivity extends Activity {
     @BindView(R.id.check_tv_view)
     CheckedTextView mCheckedTextView;
 
-    private ImageView[] imgArray = new ImageView[]{mImg, mImg2};
     private Subscription mSubscription;
 
     @Override
@@ -103,6 +103,19 @@ public class MainActivity extends Activity {
                 throwable.printStackTrace();
             }
         });
+
+        RxBus.getInstance().toSubscription(RemovePhotoClickEvent.class, new Action1<RemovePhotoClickEvent>() {
+            @Override
+            public void call(RemovePhotoClickEvent removePhotoClickEvent) {
+                PhotoEntity photoEntity = removePhotoClickEvent.getPhotoEntity();
+                mRecyclerView.removePhotoData(photoEntity);
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        });
     }
 
 
@@ -116,7 +129,7 @@ public class MainActivity extends Activity {
     @OnClick(R.id.container_footer_add)
     public void onFooterAddClick() {
 //        openGallery3();
-        mCheckedTextView.setChecked(true);
+
     }
 
     private void openGallery0() {

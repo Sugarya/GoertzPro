@@ -102,9 +102,12 @@
 
     <declare-styleable name="SelectPhotoRecyclerView">
         <attr name="showType" format="enum">
-        <enum name="display" value="0"/>
-        <enum name="upload" value="1"/>
+            <enum name="display" value="0"/>
+            <enum name="upload" value="1"/>
         </attr>
+        <attr name="spanCount" format="integer"/>
+        <attr name="limitCount" format="integer"/>
+        <attr name="onceSelectCount" format="integer"/>
     </declare-styleable>
 
 </resources>
