@@ -1,4 +1,4 @@
-package com.sugary.goertzpro.widget.custom;
+package com.sugary.goertzpro.widget.photorecycle;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,7 +24,6 @@ import com.sugary.goertzpro.BuildConfig;
 import com.sugary.goertzpro.R;
 import com.sugary.goertzpro.utils.ImageLoader;
 import com.sugary.goertzpro.utils.RxBus;
-import com.sugary.goertzpro.widget.photorecycle.PhotoEntity;
 import com.sugary.goertzpro.widget.photorecycle.event.AddPhotoClickEvent;
 import com.sugary.goertzpro.widget.photorecycle.event.RemovePhotoClickEvent;
 import com.zhihu.matisse.Matisse;
@@ -39,8 +38,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.sugary.goertzpro.widget.custom.SelectPhotoRecyclerView.ShowTypeEnum.ONLY_DISPLAY;
-import static com.sugary.goertzpro.widget.custom.SelectPhotoRecyclerView.ShowTypeEnum.UP_LOADING;
+import static com.sugary.goertzpro.widget.photorecycle.SelectPhotoRecyclerView.ShowTypeEnum.ONLY_DISPLAY;
+import static com.sugary.goertzpro.widget.photorecycle.SelectPhotoRecyclerView.ShowTypeEnum.UP_LOADING;
 
 
 /**

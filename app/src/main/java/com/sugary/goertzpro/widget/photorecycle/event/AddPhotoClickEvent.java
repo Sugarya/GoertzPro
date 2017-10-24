@@ -1,7 +1,7 @@
 package com.sugary.goertzpro.widget.photorecycle.event;
 
 
-import com.sugary.goertzpro.widget.custom.SelectPhotoRecyclerView;
+import com.sugary.goertzpro.widget.photorecycle.SelectPhotoRecyclerView;
 
 /**
  * Created by Ethan on 2017/10/2.

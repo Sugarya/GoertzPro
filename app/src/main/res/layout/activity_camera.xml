@@ -69,7 +69,7 @@
             />
 
 
-        <com.sugary.goertzpro.widget.custom.SelectPhotoRecyclerView
+        <com.sugary.goertzpro.widget.photorecycle.SelectPhotoRecyclerView
             android:id="@+id/recycler_select_photo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

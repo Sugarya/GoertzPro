@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import com.sugary.goertzpro.R;
 import com.sugary.goertzpro.utils.RxBus;
-import com.sugary.goertzpro.widget.custom.SelectPhotoRecyclerView;
+import com.sugary.goertzpro.widget.photorecycle.SelectPhotoRecyclerView;
 import com.sugary.goertzpro.widget.photorecycle.PhotoEntity;
 import com.sugary.goertzpro.widget.photorecycle.event.AddPhotoClickEvent;
 import com.sugary.goertzpro.widget.photorecycle.event.RemovePhotoClickEvent;
