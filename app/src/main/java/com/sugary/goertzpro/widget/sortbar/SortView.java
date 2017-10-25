@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+import static com.sugary.goertzpro.widget.sortbar.IndicatorStatusEnum.INITIAL;
 import static com.sugary.goertzpro.widget.sortbar.IndicatorStatusEnum.UNDER_CHECKED;
 import static com.sugary.goertzpro.widget.sortbar.IndicatorStatusEnum.UPWARD_CHECKED;
 
@@ -25,7 +26,7 @@ public class SortView extends View {
     private static final int DEFAULT_INITIAL_TRIANGLE_COLOR = Color.parseColor("#cccccc");
     private static final int DEFAULT_CHECK_TRIANGLE_COLOR = Color.parseColor("#ff0000");
 
-    private IndicatorStatusEnum mStatusEnum = IndicatorStatusEnum.INITIAL;
+    private IndicatorStatusEnum mStatusEnum = INITIAL;
     private Paint mPaintUpward;
     private Paint mPaintUnder;
     private Path mPathUpward;
@@ -130,6 +131,12 @@ public class SortView extends View {
         postInvalidate();
     }
 
+    public void checkInitalTriagle(){
+        setVisibility(VISIBLE);
+        mStatusEnum = INITIAL;
+        postInvalidate();
+    }
+
     public void checkTriangle(IndicatorStatusEnum statusEnum){
         if(statusEnum == null){
             return;
@@ -154,6 +161,8 @@ public class SortView extends View {
             case UNDER_CHECKED:
                 checkTriangle(UPWARD_CHECKED);
                 break;
+            default:
+                checkTriangle(INITIAL);
         }
     }
 
@@ -172,6 +181,9 @@ public class SortView extends View {
             case UNDER_CHECKED:
                 checkTriangle(UPWARD_CHECKED);
                 break;
+            default:
+                checkTriangle(INITIAL);
+
         }
     }
 

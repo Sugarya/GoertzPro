@@ -9,9 +9,6 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import static com.sugary.goertzpro.widget.sortbar.IndicatorStatusEnum.UNDER_CHECKED;
-import static com.sugary.goertzpro.widget.sortbar.IndicatorStatusEnum.UPWARD_CHECKED;
-
 /**
  * Created by Ethan on 2017/10/24.
  * 排序单元
@@ -34,7 +31,7 @@ public class SortBarUnit extends LinearLayout{
     private TextView mTvTitle;
     private SortView mSortView;
 
-    private boolean isSelected = false;
+    private boolean mIsUnitSelected = false;
 
     public SortBarUnit(Context context) {
         super(context);
@@ -82,52 +79,78 @@ public class SortBarUnit extends LinearLayout{
         String title = itemSortable.getTitle();
         mTvTitle.setText(title);
 
-        if(isSelected){
-            mTvTitle.setTextColor(mTxtSelectedColor);
-        }else{
-            mTvTitle.setTextColor(mTxtColor);
-        }
-
-        boolean hasIndicator = itemSortable.hasSortView();
-        if(!hasIndicator){
-            mSortView.setVisibility(GONE);
-            return;
-        }
-        mSortView.checkTriangle(IndicatorStatusEnum.INITIAL);
+//        if(mIsUnitSelected){
+//            mTvTitle.setTextColor(mTxtSelectedColor);
+//        }else{
+//            mTvTitle.setTextColor(mTxtColor);
+//        }
+//
+//        boolean hasIndicator = itemSortable.hasSortView();
+//        if(!hasIndicator){
+//            mSortView.setVisibility(GONE);
+//            return;
+//        }
+//        mSortView.checkTriangle(IndicatorStatusEnum.INITIAL);
     }
 
     public void toggleUpward(){
         mSortView.toggleUpward();
 
-        if(isSelected){
+        if(mIsUnitSelected){
             mTvTitle.setTextColor(mTxtColor);
         }else{
             mTvTitle.setTextColor(mTxtSelectedColor);
         }
-
     }
 
     public void toggleUnder(){
         mSortView.toggleUnder();
 
-        if(isSelected){
+        if(mIsUnitSelected){
             mTvTitle.setTextColor(mTxtColor);
         }else{
             mTvTitle.setTextColor(mTxtSelectedColor);
         }
-
     }
 
+    public void restore(){
+        setUnitUpwardSelected(false);
+    }
 
-    public void setTxtSize(int txtSize) {
+    public void setUnitUpwardSelected(boolean unitSelected) {
+        mIsUnitSelected = unitSelected;
+        setupUnitShow();
+    }
+
+    private void setupUnitShow() {
+        if(mIsUnitSelected){
+            mTvTitle.setTextColor(mTxtSelectedColor);
+            mSortView.checkUpwardTriangle();
+        }else{
+            mSortView.checkInitalTriagle();
+            mTvTitle.setTextColor(mTxtColor);
+        }
+
+        if(mCurrentItemSortable != null){
+            boolean hasSortView = mCurrentItemSortable.hasSortView();
+            if(hasSortView){
+                mSortView.setVisibility(VISIBLE);
+            }else{
+                mSortView.setVisibility(GONE);
+            }
+        }
+    }
+
+    public void setTitleSize(int txtSize) {
         mTxtSize = txtSize;
         mTvTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, txtSize);
     }
 
-    public void setTxtColor(int txtColor) {
+    public void setTitleColor(int txtColor) {
         mTxtColor = txtColor;
         mTvTitle.setTextColor(txtColor);
     }
+
 
     public void setTitle(String title){
         if(title == null){
@@ -142,4 +165,6 @@ public class SortBarUnit extends LinearLayout{
         lp.leftMargin = indicatorLeftMargin;
         mSortView.setLayoutParams(lp);
     }
+
+
 }

@@ -84,19 +84,22 @@ public class SortBarLayout extends RelativeLayout {
             sortBarUnit.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+
                     if(mOnItemClickListener != null){
                         mOnItemClickListener.onItemClick(index, itemSortable);
+                        sortBarUnit.toggleUnder();
                     }
                 }
             });
 
-//            boolean selected = itemSortable.isSelected();
-//            if(selected){
-//                sortBarUnit.setTxtColor(mTxtSelectedColor);
-//            }else{
-//                sortBarUnit.setTxtColor(mTxtColor);
-//            }
-//            sortBarUnit.bindUnitData(itemSortable);
+
+            if(index == 0){
+                sortBarUnit.setUnitUpwardSelected(true);
+            }else{
+                sortBarUnit.setUnitUpwardSelected(false);
+            }
+            sortBarUnit.bindUnitData(itemSortable);
         }
     }
 
