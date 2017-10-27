@@ -23,8 +23,8 @@ public class SortView extends View {
 
     private static final String TAG = "SortIndicator";
 
-    private static final int DEFAULT_INITIAL_TRIANGLE_COLOR = Color.parseColor("#cccccc");
-    private static final int DEFAULT_CHECK_TRIANGLE_COLOR = Color.parseColor("#ff0000");
+//    private static final int DEFAULT_INITIAL_TRIANGLE_COLOR = Color.parseColor("#cccccc");
+//    private static final int DEFAULT_SELECTED_TRIANGLE_COLOR = Color.parseColor("#ff0000");
 
     private IndicatorStatusEnum mStatusEnum = INITIAL;
     private Paint mPaintUpward;
@@ -32,9 +32,8 @@ public class SortView extends View {
     private Path mPathUpward;
     private Path mPathUnder;
 
-    private int mTriangleColor = DEFAULT_INITIAL_TRIANGLE_COLOR;
-    private int mCheckTriangleColor = DEFAULT_CHECK_TRIANGLE_COLOR;
-
+    private int mTriangleColor;
+    private int mTriangleSelectedColor;
 
     public SortView(Context context) {
         super(context);
@@ -50,13 +49,13 @@ public class SortView extends View {
         setVisibility(GONE);
         mPathUpward = new Path();
         mPaintUpward = new Paint();
-        mPaintUpward.setColor(mTriangleColor);
+//        mPaintUpward.setColor(mTriangleColor);
         mPaintUpward.setStyle(Paint.Style.FILL);
         mPaintUpward.setAntiAlias(true);
 
         mPathUnder = new Path();
         mPaintUnder = new Paint();
-        mPaintUnder.setColor(mTriangleColor);
+//        mPaintUnder.setColor(mTriangleColor);
         mPaintUnder.setStyle(Paint.Style.FILL);
         mPaintUnder.setAntiAlias(true);
     }
@@ -101,12 +100,12 @@ public class SortView extends View {
                 mPaintUnder.setColor(mTriangleColor);
                 break;
             case UPWARD_CHECKED:
-                mPaintUpward.setColor(mCheckTriangleColor);
+                mPaintUpward.setColor(mTriangleSelectedColor);
                 mPaintUnder.setColor(mTriangleColor);
                 break;
             case UNDER_CHECKED:
                 mPaintUpward.setColor(mTriangleColor);
-                mPaintUnder.setColor(mCheckTriangleColor);
+                mPaintUnder.setColor(mTriangleSelectedColor);
                 break;
             default:
                 mPaintUpward.setColor(mTriangleColor);
@@ -131,7 +130,7 @@ public class SortView extends View {
         postInvalidate();
     }
 
-    public void checkInitalTriagle(){
+    public void checkInitialTriangle(){
         setVisibility(VISIBLE);
         mStatusEnum = INITIAL;
         postInvalidate();
@@ -146,6 +145,14 @@ public class SortView extends View {
         postInvalidate();
     }
 
+    public void checkTriangle(){
+        if(mStatusEnum == null){
+            return;
+        }
+        setVisibility(VISIBLE);
+        postInvalidate();
+    }
+
     public void toggleUpward(){
         if(mStatusEnum == null){
             return;
@@ -153,15 +160,19 @@ public class SortView extends View {
 
         switch (mStatusEnum){
             case INITIAL:
+                mStatusEnum = UPWARD_CHECKED;
                 checkTriangle(UPWARD_CHECKED);
                 break;
             case UPWARD_CHECKED:
+                mStatusEnum = UNDER_CHECKED;
                 checkTriangle(UNDER_CHECKED);
                 break;
             case UNDER_CHECKED:
+                mStatusEnum = UPWARD_CHECKED;
                 checkTriangle(UPWARD_CHECKED);
                 break;
             default:
+                mStatusEnum = INITIAL;
                 checkTriangle(INITIAL);
         }
     }
@@ -173,18 +184,50 @@ public class SortView extends View {
 
         switch (mStatusEnum){
             case INITIAL:
+                mStatusEnum = UNDER_CHECKED;
                 checkTriangle(UNDER_CHECKED);
                 break;
             case UPWARD_CHECKED:
+                mStatusEnum = UNDER_CHECKED;
                 checkTriangle(UNDER_CHECKED);
                 break;
             case UNDER_CHECKED:
+                mStatusEnum = UPWARD_CHECKED;
                 checkTriangle(UPWARD_CHECKED);
                 break;
             default:
+                mStatusEnum = INITIAL;
                 checkTriangle(INITIAL);
 
         }
     }
 
+    public void toggle(){
+        if(mStatusEnum == null){
+            return;
+        }
+
+        switch (mStatusEnum){
+            case UPWARD_CHECKED:
+                mStatusEnum = UNDER_CHECKED;
+                checkTriangle(UNDER_CHECKED);
+                break;
+            case UNDER_CHECKED:
+                mStatusEnum = UPWARD_CHECKED;
+                checkTriangle(UPWARD_CHECKED);
+                break;
+        }
+    }
+
+    public IndicatorStatusEnum getStatusEnum() {
+        return mStatusEnum;
+    }
+
+    public void setTriangleColor(int triangleColor) {
+        mTriangleColor = triangleColor;
+    }
+
+    public void setTriangleSelectedColor(int triangleSelectedColor) {
+        mTriangleSelectedColor = triangleSelectedColor;
+    }
 }

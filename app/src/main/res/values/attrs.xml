@@ -109,6 +109,13 @@
         <attr name="limitCount" format="integer"/>
         <attr name="onceSelectCount" format="integer"/>
     </declare-styleable>
-
+    <declare-styleable name="SortBarLayout">
+        <attr name="titleColor" format="color"/>
+        <attr name="titleSelectedColor" format="color"/>
+        <attr name="titleSize" format="dimension"/>
+        <attr name="triangleColor" format="color"/>
+        <attr name="triangleSelectedColor" format="color"/>
+        <attr name="triangleLeftMargin" format="dimension"/>
+    </declare-styleable>
 
 </resources>

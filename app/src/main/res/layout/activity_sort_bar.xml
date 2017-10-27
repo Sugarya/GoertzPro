@@ -9,12 +9,11 @@
     tools:context="com.sugary.goertzpro.scene.sortbar.SortBarActivity"
     >
 
-
-
     <com.sugary.goertzpro.widget.sortbar.SortBarLayout
         android:id="@+id/indicator_sort_bar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        app:triangleLeftMargin="1dp"
         />
 
     <Button
