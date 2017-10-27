@@ -9,93 +9,89 @@
     tools:context="com.sugary.goertzpro.scene.uprefresh.PullRefreshActivity"
     >
 
-    <com.sugary.goertzpro.widget.pullrefresh.UpPullRefreshLayout
+    <com.sugary.goertzpro.widget.pullrefresh.PullToRefreshLayout
         android:id="@+id/container_body"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:frameHeight="70dp"
-        app:refreshBoundary="75dp"
         app:frameSpeed="20"
+        app:refreshBoundary="75dp"
+        app:refreshDrawable="@drawable/down_pull_refresh"
+        app:refreshImgHeight="70dp"
         >
 
-
-
-        <!--<ImageView-->
-            <!--android:id="@+id/img_refresh"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:src="@drawable/ic_santa_claus1"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--/>-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/tv_refresh"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:textSize="12sp"-->
-            <!--android:textColor="@color/font_gray"-->
-            <!--android:text="上拉刷新"-->
-            <!--/>-->
-        <ScrollView
-            android:id="@+id/scroll_body"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/bg_white"
-            android:visibility="visible"
             >
 
-            <LinearLayout
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容"-->
+                <!--android:textSize="40sp"-->
+                <!--android:background="@color/white"-->
+                <!--/>-->
+
+            <!--<ScrollView-->
+                <!--android:id="@+id/scroll_body"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="@color/bg_white"-->
+                <!--android:visibility="visible"-->
+                <!--&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="vertical"-->
+                    <!--&gt;-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_scroll_content"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容"-->
+                        <!--android:textSize="40sp"-->
+                        <!--/>-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_pull_refresh"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:onClick="onTxtClick"-->
+                        <!--android:text="我是可点的文字"-->
+                        <!--android:textSize="36sp"-->
+                        <!--/>-->
+
+                    <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:textSize="40sp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:text="我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容"&ndash;&gt;-->
+                    <!--&lt;!&ndash;/>&ndash;&gt;-->
+
+                    <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:textSize="40sp"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:text="我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容"&ndash;&gt;-->
+                    <!--&lt;!&ndash;/>&ndash;&gt;-->
+
+                <!--</LinearLayout>-->
+
+            <!--</ScrollView>-->
+
+            <com.sugary.goertzpro.widget.enhancerecycler.EnhanceRecyclerView
+                android:id="@+id/recycler_refresh"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+                android:layout_height="match_parent"
+                android:background="@color/bg_white"
+                android:scrollbars="none"
+                android:visibility="visible"
+                />
 
-                <TextView
-                    android:id="@+id/tv_scroll_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="40sp"
-                    android:text="我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容"
-                    />
+        </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/tv_pull_refresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="36sp"
-                    android:text="我是可点的文字"
-                    android:onClick="onTxtClick"
-                    />
-
-                <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:textSize="40sp"-->
-                    <!--android:text="我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容"-->
-                    <!--/>-->
-
-                <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:textSize="40sp"-->
-                    <!--android:text="我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容，我是测试内容"-->
-                    <!--/>-->
-
-            </LinearLayout>
-
-        </ScrollView>
-
-        <com.sugary.goertzpro.widget.enhancerecycler.EnhanceRecyclerView
-            android:id="@+id/recycler_refresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:background="@color/bg_white"
-            android:visibility="gone"
-            />
-
-
-    </com.sugary.goertzpro.widget.pullrefresh.UpPullRefreshLayout>
+    </com.sugary.goertzpro.widget.pullrefresh.PullToRefreshLayout>
 
 </LinearLayout>

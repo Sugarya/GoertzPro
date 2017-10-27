@@ -36,17 +36,17 @@
         <activity android:name=".scene.banner.BannerTestActivity">
         </activity>
         <activity android:name=".scene.uprefresh.PullRefreshActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity android:name=".scene.filterbar.TabBarActivity">
         </activity>
         <activity android:name=".scene.scrollconflicts.ScrollConflictsActivity">
         </activity>
         <activity android:name=".scene.sortbar.SortBarActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
     </application>
 

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -13,9 +12,8 @@ import com.sugary.goertzpro.R;
 import com.sugary.goertzpro.scene.uprefresh.adapter.RecyclerAdapter;
 import com.sugary.goertzpro.utils.RxBus;
 import com.sugary.goertzpro.widget.enhancerecycler.EnhanceRecyclerView;
-import com.sugary.goertzpro.widget.pullrefresh.PullDownRefreshDataEvent;
-import com.sugary.goertzpro.widget.pullrefresh.UpPullRefreshLayout;
-
+import com.sugary.goertzpro.widget.pullrefresh.PullToRefreshLayout;
+import com.sugary.goertzpro.widget.pullrefresh.RefreshingStateEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,16 +26,16 @@ public class PullRefreshActivity extends AppCompatActivity {
     private static final String TAG = "PullRefreshActivity";
 
     @BindView(R.id.container_body)
-    UpPullRefreshLayout mUpPullRefreshLayout;
+    PullToRefreshLayout mPullToRefreshLayout;
 
     @BindView(R.id.recycler_refresh)
     EnhanceRecyclerView mRecyclerRefresh;
 
-    @BindView(R.id.scroll_body)
-    ScrollView mScrollView;
-
-    @BindView(R.id.tv_scroll_content)
-    TextView mTvScrollContent;
+//    @BindView(R.id.scroll_body)
+//    ScrollView mScrollView;
+//
+//    @BindView(R.id.tv_scroll_content)
+//    TextView mTvScrollContent;
 
     //arguments
     private List<String> mTitleList;
@@ -53,15 +51,15 @@ public class PullRefreshActivity extends AppCompatActivity {
     }
 
     private void initRxBus() {
-        RxBus.getInstance().toSubscription(PullDownRefreshDataEvent.class, new Action1<PullDownRefreshDataEvent>() {
+        RxBus.getInstance().toSubscription(RefreshingStateEvent.class, new Action1<RefreshingStateEvent>() {
             @Override
-            public void call(final PullDownRefreshDataEvent pullDownRefreshDataEvent) {
+            public void call(final RefreshingStateEvent refreshingStateEvent) {
                 Log.d(TAG, "call: PullDownRefreshDataEvent");
-                mUpPullRefreshLayout.postDelayed(new Runnable() {
+                mPullToRefreshLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mUpPullRefreshLayout.notifyRefreshStatusOnSuccess(pullDownRefreshDataEvent);
-                        mUpPullRefreshLayout.completeRefresh();
+                        mPullToRefreshLayout.notifyRefreshOnSuccess(refreshingStateEvent);
+                        mPullToRefreshLayout.completeRefresh();
                     }
                 }, 1500);
             }
@@ -116,7 +114,7 @@ public class PullRefreshActivity extends AppCompatActivity {
 
 
     public void onTxtClick(View view){
-        mUpPullRefreshLayout.startRefreshing();
+        mPullToRefreshLayout.startRefreshing();
     }
 
 

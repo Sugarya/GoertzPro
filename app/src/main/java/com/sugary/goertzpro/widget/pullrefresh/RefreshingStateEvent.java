@@ -6,7 +6,7 @@ import android.view.View;
  * Created by Ethan on 2017/10/6.
  */
 
-public class PullDownRefreshDataEvent {
+public class RefreshingStateEvent {
 
     private int refreshBarHeight;
     /**
@@ -14,7 +14,7 @@ public class PullDownRefreshDataEvent {
      */
     private View bodyView;
 
-    public PullDownRefreshDataEvent(int refreshBarHeight, View bodyView) {
+    public RefreshingStateEvent(int refreshBarHeight, View bodyView) {
         this.refreshBarHeight = refreshBarHeight;
         this.bodyView = bodyView;
     }

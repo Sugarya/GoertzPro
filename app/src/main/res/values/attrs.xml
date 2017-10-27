@@ -89,11 +89,14 @@
         <attr name="fifthIcon" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="UpPullRefreshLayout">
-        <attr name="frameWidth" format="dimension"/>
-        <attr name="frameHeight" format="dimension"/>
+    <declare-styleable name="PullToRefreshLayout">
+        <attr name="refreshImgWidth" format="dimension"/>
+        <attr name="refreshImgHeight" format="dimension"/>
         <attr name="frameSpeed" format="integer"/>
         <attr name="refreshBoundary" format="dimension"/>
+        <attr name="refreshBackground" format="color"/>
+        <attr name="refreshTextColor" format="color"/>
+        <attr name="refreshDrawable" format="reference"/>
     </declare-styleable>
 
     <declare-styleable name="LoadingIndicatorView">
@@ -109,6 +112,7 @@
         <attr name="limitCount" format="integer"/>
         <attr name="onceSelectCount" format="integer"/>
     </declare-styleable>
+
     <declare-styleable name="SortBarLayout">
         <attr name="titleColor" format="color"/>
         <attr name="titleSelectedColor" format="color"/>
