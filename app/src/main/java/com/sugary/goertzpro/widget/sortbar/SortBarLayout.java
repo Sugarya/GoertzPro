@@ -3,7 +3,6 @@ package com.sugary.goertzpro.widget.sortbar;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -58,7 +57,7 @@ public class SortBarLayout extends RelativeLayout {
         init();
     }
 
-    public SortBarLayout(Context context, @Nullable AttributeSet attrs) {
+    public SortBarLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SortBarLayout);
         mTxtColor = typedArray.getColor(R.styleable.SortBarLayout_titleColor, mTxtColor);
@@ -117,7 +116,7 @@ public class SortBarLayout extends RelativeLayout {
 
     //********************************************对外提供方法
 
-    public void bindData(List<ItemSortable> itemSortableList) {
+    public void bindData(List<? extends ItemSortable> itemSortableList) {
         if (itemSortableList == null) {
             return;
         }

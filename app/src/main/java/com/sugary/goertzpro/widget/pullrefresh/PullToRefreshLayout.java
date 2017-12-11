@@ -8,6 +8,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,9 +33,11 @@ import com.sugary.goertzpro.utils.RxBus;
  * 下拉刷新分成五个状态：原始态，向下拉动态，刷新态，越过态，刷新向上推动态，向上推动态, （initial, pull, refreshing, overBoundary, refreshingPush,push）
  * 状态与状态之间通过动画链接；
  * 未使用嵌套滑动机制，也即一次触摸交互只能交由一个子控件全部消费
- * onInterceptTouchEvent（）决定事件由谁来处理，OnTouchEvent负责具体的消费逻辑
+ * 事件在U型左半部分时：onInterceptTouchEvent（）决定事件由谁来处理，OnTouchEvent负责具体的消费逻辑
+ * 事件在U型右半部分时：OnTouchEvent处理具体的消费逻辑
  * <p>
- * 需保证在xml里该布局只有一个子布局控件（后续可拓展，消除该限制）
+ * 需保证在xml里该布局只有一个子布局控件;
+ *
  */
 public class PullToRefreshLayout extends RelativeLayout {
 
@@ -99,6 +102,11 @@ public class PullToRefreshLayout extends RelativeLayout {
      * 是否第一次运行
      */
     private boolean mIsFirstRun = true;
+
+    /**
+     * 正在刷新的回调
+     */
+    private OnRefreshingListener mOnRefreshingListener;
 
     public PullToRefreshLayout(Context context) {
         super(context);
@@ -204,16 +212,17 @@ public class PullToRefreshLayout extends RelativeLayout {
                 if (deltaY > 13 && deltaY > Math.abs(deltaX)) {
                     if (mIsFirstRun) {
 //                        Log.d(TAG, "onInterceptTouchEvent mIsFirstRun = " + mIsFirstRun);
-                        if (!(childView instanceof ViewGroup)) {
-                            mEnableRefresh = checkRefreshEnable(childView);
-                        } else {
-                            ViewGroup viewGroup = (ViewGroup) childView;
-                            int childCount = viewGroup.getChildCount();
-                            for (int i = 0; i < childCount; i++) {
-                                View view = viewGroup.getChildAt(i);
-                                mEnableRefresh = checkRefreshEnable(view);
-                                if (mEnableRefresh) {
-                                    break;
+                        mEnableRefresh = checkRefreshEnable(childView);
+                        if(!mEnableRefresh){
+                            if(childView instanceof ViewGroup){
+                                ViewGroup viewGroup = (ViewGroup) childView;
+                                int childCount = viewGroup.getChildCount();
+                                for (int i = 0; i < childCount; i++) {
+                                    View view = viewGroup.getChildAt(i);
+                                    mEnableRefresh = checkRefreshEnable(view);
+                                    if (mEnableRefresh) {
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -254,7 +263,7 @@ public class PullToRefreshLayout extends RelativeLayout {
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
                 int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
 //                Log.d(TAG, "onInterceptTouchEvent checkRefreshEnable: firstVisibleItemPosition = " + firstVisibleItemPosition);
-                result = firstVisibleItemPosition == 0;
+                result = firstVisibleItemPosition == 0 || firstVisibleItemPosition == -1;
             }
         } else if (childView instanceof ScrollView) {
             ScrollView scrollView = (ScrollView) childView;
@@ -262,6 +271,8 @@ public class PullToRefreshLayout extends RelativeLayout {
         } else if (childView instanceof NestedScrollView) {
             NestedScrollView nestedScrollView = (NestedScrollView) childView;
             result = nestedScrollView.getScrollY() == 0;
+        } else if(childView instanceof ViewPager){
+            result = true;
         }
 
         return result;
@@ -413,7 +424,10 @@ public class PullToRefreshLayout extends RelativeLayout {
             mRefreshAnimationDrawable.start();
         }
 
-        RxBus.getInstance().send(new RefreshingStateEvent(mBoundary, childView));
+//        RxBus.getInstance().send(new RefreshingStateEvent(mBoundary, childView));
+        if(mOnRefreshingListener != null){
+            mOnRefreshingListener.onRefreshing();
+        }
     }
 
     private synchronized void startPullState(int deltaY) {
@@ -525,6 +539,10 @@ public class PullToRefreshLayout extends RelativeLayout {
     //********************************************对外提供的方法
 
 
+    public void setOnRefreshingListener(OnRefreshingListener onRefreshingListener) {
+        mOnRefreshingListener = onRefreshingListener;
+    }
+
     /**
      * 开启刷新动画
      */
@@ -566,15 +584,11 @@ public class PullToRefreshLayout extends RelativeLayout {
      * 改变刷新状态，从数据刷新态到结束态
      * 该方法适用在刷新完成时做调用
      *
-     * @param event
+     * @param
      */
-    public void notifyRefreshOnSuccess(RefreshingStateEvent event) {
-        if (event == null) {
-            return;
-        }
-        final int startValue = event.getRefreshBarHeight();
-        final View childView = event.getBodyView();
-        startRefreshingPushState(startValue, childView);
+    public void notifyRefreshOnSuccess() {
+        View childView = getChildAt(CHILD_VIEW_COUNT - 1);
+        startRefreshingPushState(mBoundary, childView);
     }
 
     public void completeRefresh() {
@@ -630,5 +644,9 @@ public class PullToRefreshLayout extends RelativeLayout {
          */
         PUSH
 
+    }
+
+    public interface OnRefreshingListener{
+        void onRefreshing();
     }
 }

@@ -40,7 +40,7 @@ public class SortBarActivity extends AppCompatActivity {
     }
 
     public void onToggleClick(View view){
-        List<ItemSortable> sortBarModelList = new ArrayList<>();
+        List<SortBarModel> sortBarModelList = new ArrayList<>();
         for(int i = 0; i < 5; i++){
             boolean hasSortView = true;
             if(i == 0 || i == 1 || i == 4){

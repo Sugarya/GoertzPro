@@ -5,21 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.sugary.goertzpro.R;
 import com.sugary.goertzpro.scene.uprefresh.adapter.RecyclerAdapter;
-import com.sugary.goertzpro.utils.RxBus;
 import com.sugary.goertzpro.widget.enhancerecycler.EnhanceRecyclerView;
 import com.sugary.goertzpro.widget.pullrefresh.PullToRefreshLayout;
-import com.sugary.goertzpro.widget.pullrefresh.RefreshingStateEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.functions.Action1;
 
 public class PullRefreshActivity extends AppCompatActivity {
 
@@ -46,19 +42,19 @@ public class PullRefreshActivity extends AppCompatActivity {
         setContentView(R.layout.activity_up_pull_to_refresh);
         ButterKnife.bind(this);
 
-        initRxBus();
+        initPullToRefreshLayout();
         initRecyclerView();
     }
 
-    private void initRxBus() {
-        RxBus.getInstance().toSubscription(RefreshingStateEvent.class, new Action1<RefreshingStateEvent>() {
+    private void initPullToRefreshLayout() {
+        mPullToRefreshLayout.setOnRefreshingListener(new PullToRefreshLayout.OnRefreshingListener() {
             @Override
-            public void call(final RefreshingStateEvent refreshingStateEvent) {
+            public void onRefreshing() {
                 Log.d(TAG, "call: PullDownRefreshDataEvent");
                 mPullToRefreshLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mPullToRefreshLayout.notifyRefreshOnSuccess(refreshingStateEvent);
+                        mPullToRefreshLayout.notifyRefreshOnSuccess();
                         mPullToRefreshLayout.completeRefresh();
                     }
                 }, 1500);
