@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.sugary.goertzpro"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sugary.goertzpro">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -14,39 +13,30 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme">
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.extend.group"
             android:exported="false"
-            android:grantUriPermissions="true"
-            >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"
-                />
+                android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".scene.filterbar.MainActivity">
-        </activity>
-        <activity android:name=".scene.camera.MainActivity">
-
-        </activity>
-        <activity android:name=".scene.banner.BannerTestActivity">
-        </activity>
-        <activity android:name=".scene.uprefresh.PullRefreshActivity">
-
-        </activity>
-        <activity android:name=".scene.filterbar.TabBarActivity">
-        </activity>
-        <activity android:name=".scene.scrollconflicts.ScrollConflictsActivity">
-        </activity>
+        <activity android:name=".scene.filterbar.MainActivity"></activity>
+        <activity android:name=".scene.camera.MainActivity"></activity>
+        <activity android:name=".scene.banner.BannerTestActivity"></activity>
+        <activity android:name=".scene.uprefresh.PullRefreshActivity"></activity>
+        <activity android:name=".scene.filterbar.TabBarActivity"></activity>
+        <activity android:name=".scene.scrollconflicts.ScrollConflictsActivity"></activity>
         <activity android:name=".scene.sortbar.SortBarActivity">
+        </activity>
+        <activity android:name=".scene.bottompopup.PopupActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>

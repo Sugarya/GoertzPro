@@ -16,4 +16,9 @@
         <attr name="sl_dy" format="dimension"/>
     </declare-styleable>
 
+    <style name="PopupWindowAnimation">
+        <item name="android:windowEnterAnimation">@anim/bottom_enter</item>
+        <item name="android:windowExitAnimation">@anim/bottom_exit</item>
+    </style>
+
 </resources>
