@@ -8,7 +8,7 @@ import java.lang.IllegalArgumentException
 
 /**
  * Created by Ethan Ruan on 2018/12/29.
- *
+ * 底部弹窗
  */
 class BottomPopupBuilder {
 
@@ -16,13 +16,15 @@ class BottomPopupBuilder {
 
     }
 
+    private lateinit var mPopupWindow: PopupWindow
+
     private val mProperty: BottomPopupProperty = BottomPopupProperty()
 
     var isOutsideTouchable: Boolean = true
-    set(value) {
-        field = value
-        mProperty.isOutsideTouchable = value
-    }
+        set(value) {
+            field = value
+            mProperty.isOutsideTouchable = value
+        }
 
     var popupAlpha: Float = 1f
         set(value) {
@@ -42,33 +44,36 @@ class BottomPopupBuilder {
             mProperty.window = value
         }
 
+    var newPopupEveryShow: Boolean = false
+
     fun createAndShow(parentView: View): PopupWindow {
-        val contentViewFromProperty = mProperty.contentView
-                ?: throw IllegalArgumentException("Please setup the property of contentView")
+        if(!newPopupEveryShow || (newPopupEveryShow && !this::mPopupWindow.isInitialized)){
+            val contentViewFromProperty = mProperty.contentView
+                    ?: throw IllegalArgumentException("Please setup the property of contentView")
 
-        val popupAlphaFromProperty = mProperty.popupAlpha
+            mPopupWindow = PopupWindow(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                setBackgroundDrawable(BitmapDrawable())
+                isFocusable = true
+                isTouchable = true
+                isOutsideTouchable = mProperty.isOutsideTouchable
+                animationStyle = R.style.PopupWindowAnimation
+                contentView = contentViewFromProperty
 
-        val popupWindow = PopupWindow(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-            setBackgroundDrawable(BitmapDrawable())
-            isFocusable = true
-            isTouchable = true
-            isOutsideTouchable = mProperty.isOutsideTouchable
-            animationStyle = R.style.PopupWindowAnimation
-            contentView = contentViewFromProperty
-
-            setOnDismissListener {
-                setBackgroundAlpha(1f)
+                setOnDismissListener {
+                    setBackgroundAlpha(1f)
+                }
             }
         }
 
-        if (popupWindow.isShowing) {
-            popupWindow.dismiss()
+        if (mPopupWindow.isShowing) {
+            mPopupWindow.dismiss()
         }
 
+        val popupAlphaFromProperty = mProperty.popupAlpha
         setBackgroundAlpha(popupAlphaFromProperty)
-        popupWindow.showAtLocation(parentView, Gravity.BOTTOM, 0, 0)
+        mPopupWindow.showAtLocation(parentView, Gravity.BOTTOM, 0, 0)
 
-        return popupWindow
+        return mPopupWindow
     }
 
 
@@ -81,6 +86,15 @@ class BottomPopupBuilder {
         mProperty.window?.let {
             it.attributes.alpha = alpha
             it.attributes = it.attributes
+        }
+    }
+
+    /**
+     * 关闭弹窗
+     */
+    fun dismiss(){
+        if(this::mPopupWindow.isInitialized){
+            mPopupWindow.dismiss()
         }
     }
 
